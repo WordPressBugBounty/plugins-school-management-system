@@ -3,9 +3,9 @@ Plugin name: School Management System
 Contributors: weblizar
 Donate link: https://weblizar.com
 Tags: school, student management, student, class, learning, school management, school management system, education, teacher, staff, accountant, fees management, Learning Management
-Requires at least: 4.7
-Tested up to: 6.5
-Stable tag: 4.7
+Requires at least: 4.8
+Tested up to: 6.6.2
+Stable tag: 4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -170,11 +170,15 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 
 For more information, see [Weblizar](https://www.weblizar.com/)
 
+= 4.8 =[26-10-2024]
+* Tested upto wordpress 6.6.2
+* Tested upto PHP 8.3.12
+
 = 4.7 =[13-04-2024]
 * Tested upto wordpress 6.5
 
 = 4.6 =[08-04-2024]
-* monir changes
+* minor changes
 
 = 4.5 =[14-12-2023]
 * Tested upto php 8.3
