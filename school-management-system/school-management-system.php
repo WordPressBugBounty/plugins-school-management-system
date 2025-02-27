@@ -3,7 +3,7 @@
  * Plugin Name: The School Management - Education & Learning Management
  * Plugin URI: https://wordpress.org/plugins/school-management-system/
  * Description: The School Management System is a WordPress plugin to manage school related entities such as classes, sections, students, ID cards, teachers, staff, fees, invoices, noticeboard and much more. Its completely solutions for school management.
- * Version: 4.8
+ * Version: 4.9
  * Author: Weblizar
  * Author URI: https://weblizar.com
  * Text Domain: school-management
