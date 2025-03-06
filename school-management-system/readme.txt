@@ -5,7 +5,7 @@ Donate link: https://weblizar.com
 Tags: school, student management, student, class, learning, school management, school management system, education, teacher, staff, accountant, fees management, Learning Management
 Requires at least: 7.4
 Tested up to: 6.7.2
-Stable tag: 4.9
+Stable tag: 5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,18 +54,18 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 = School Management Pro Admin Demo =
 
 * [School Management Pro Demo](http://demo.weblizar.com/school-management/)
-* [School Management Pro Admin Demo](http://demo.weblizar.com/school-management-admin/)
-* [Suer Admin](http://demo.weblizar.com/school-management-admin/wp-admin) : Username / Password => userdemo / userdemo
-* [Admin](http://demo.weblizar.com/school-management-admin/wp-admin) : Username / Password => school_admin / 123456
-* [Teacher](http://demo.weblizar.com/school-management-admin/wp-admin) : Username / Password => teacher / 123456
-* [Accountant](http://demo.weblizar.com/school-management-admin/wp-admin) : Username / Password => accountant / 123456
-* [Receptionist](http://demo.weblizar.com/school-management-admin/wp-admin/) : Username / Password => receptionist / 123456
-* [Librarian](http://demo.weblizar.com/school-management-admin/wp-admin) : Username / Password => librarian / 123456
+* [School Management Pro Admin Demo](http://demo.weblizar.com/school-management/wp-admin)
+* [Suer Admin](http://demo.weblizar.com/school-management/wp-admin) : Username / Password => userdemo / userdemo
+* [Admin](http://demo.weblizar.com/school-management/wp-admin) : Username / Password => school_admin / 123456
+* [Teacher](http://demo.weblizar.com/school-management/wp-admin) : Username / Password => teacher / 123456
+* [Accountant](http://demo.weblizar.com/school-management/wp-admin) : Username / Password => accountant / 123456
+* [Receptionist](http://demo.weblizar.com/school-management/wp-admin/) : Username / Password => receptionist / 123456
+* [Librarian](http://demo.weblizar.com/school-management/wp-admin) : Username / Password => librarian / 123456
 
 = School Management Pro for Student and Parent Demo =
 
-* [Student](http://demo.weblizar.com/school-management/student/) : Username / Password => student1 / 123456
-* [Parents](http://demo.weblizar.com/school-management-admin/student/) : Username / Password => parent1 / 123456
+* [Student](http://demo.weblizar.com/school-management/wp-admin/) : Username / Password => student1 / 123456
+* [Parents](http://demo.weblizar.com/school-management/wp-admin/) : Username / Password => parent1 / 123456
 
 = Email & SMS Notifications =
 
@@ -169,6 +169,9 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 == Changelog ==
 
 For more information, see [Weblizar](https://www.weblizar.com/)
+
+= 5.0 =[06-03-2025]
+* Demo link updated.
 
 = 4.9 =[27-02-2025]
 * Tested upto wordpress 6.7.2
