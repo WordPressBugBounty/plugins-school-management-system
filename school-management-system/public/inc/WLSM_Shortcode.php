@@ -40,13 +40,14 @@ class WLSM_Shortcode {
 	public static function enqueue_assets() {
 		wp_enqueue_style('jquery-confirm', WLSM_PLUGIN_URL . 'assets/css/jquery-confirm.min.css');
 		wp_enqueue_style('toastr', WLSM_PLUGIN_URL . 'assets/css/toastr.min.css');
+		wp_enqueue_style( 'zebra-datepicker', WLSM_PLUGIN_URL . 'assets/css/zebra_datepicker.min.css' );
 		wp_enqueue_style('wlsm-print-preview', WLSM_PLUGIN_URL . 'assets/css/print/wlsm-preview.css', array(), '1.6', 'all');
 		wp_enqueue_style('wlsm', WLSM_PLUGIN_URL . 'assets/css/wlsm.css', array(), '1.6', 'all');
 		wp_enqueue_style('wlsm-dashboard', WLSM_PLUGIN_URL . 'assets/css/wlsm-dashboard.css', array(), '1.6', 'all');
 
 		wp_enqueue_script('jquery-confirm', WLSM_PLUGIN_URL . 'assets/js/jquery-confirm.min.js', array('jquery'), true, true);
 		wp_enqueue_script('toastr', WLSM_PLUGIN_URL . 'assets/js/toastr.min.js', array('jquery'), true, true);
-
+		wp_enqueue_script( 'zebra-datepicker', WLSM_PLUGIN_URL . 'assets/js/zebra_datepicker.min.js', array( 'jquery' ), true, true );
 		wp_enqueue_script('wlsm-public', WLSM_PLUGIN_URL . 'assets/js/wlsm.js', array('jquery', 'jquery-form'), '1.8', true);
 		
 		wp_localize_script('wlsm-public', 'wlsmdateformat', array(

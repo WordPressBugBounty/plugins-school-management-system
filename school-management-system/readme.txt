@@ -4,8 +4,8 @@ Contributors: weblizar
 Donate link: https://weblizar.com
 Tags: school, student management, student, class, learning, school management, school management system, education, teacher, staff, accountant, fees management, Learning Management
 Requires at least: 7.4
-Tested up to: 6.7.2
-Stable tag: 5.1
+Tested up to: 6.8.1
+Stable tag: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,12 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 == Changelog ==
 
 For more information, see [Weblizar](https://www.weblizar.com/)
+
+= 5.2 =[10-07-2025]
+* Remove unwanted last name field from inquiry shortcode.
+* Add zebra datepicker library at shortcode.
+* Add date picker at registration shortcode.
+* Tested with Wordpress 6.8.1
 
 = 5.1 =[01-05-2025]
 * Tested with Wordpress 6.8

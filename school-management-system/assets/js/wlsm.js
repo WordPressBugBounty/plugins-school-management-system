@@ -2,9 +2,6 @@
 	'use strict';
 	$(document).ready(function() {
 
-		
-
-
 		// Loading icon variables.
 		var loaderContainer = $('<span/>', {
 			'class': 'wlsm-loader wlsm-ml-2'
@@ -290,6 +287,16 @@
 			} else {
 				payInvoiceAmount.html('');
 			}
+		});
+
+		// Date of birth.
+		$('#wlsm_date_of_birth').Zebra_DatePicker({
+			format: wlsmdateformat.wlsmDateFormat,
+			readonly_element: false,
+			show_clear_date: true,
+			disable_time_picker: true,
+			view: 'years',
+			direction: false
 		});
 
 		// Submit inquiry.

@@ -61,16 +61,16 @@ $nonce_action = 'wlsm-submit-inquiry';
 					</div>
 				</div>
 
-				<div class="wlsm-form-group wlsm-row wlsm-mb-2">
+				<!-- <div class="wlsm-form-group wlsm-row wlsm-mb-2">
 					<div class="wlsm-col-4">
 						<label for="wlsm_last_name" class="wlsm-form-label wlsm-font-bold">
-						<?php esc_html_e( 'Last Name', 'school-management-system' ); ?>:
+						<?php // esc_html_e( 'Last Name', 'school-management-system' ); ?>:
 						</label>
 					</div>
 					<div class="wlsm-col-8">
-						<input type="text" name="last_name" class="form-control" id="wlsm_last_name" placeholder="<?php esc_attr_e( 'Enter Last name', 'school-management-system' ); ?>">
+						<input type="text" name="last_name" class="form-control" id="wlsm_last_name" placeholder="<?php // esc_attr_e( 'Enter Last name', 'school-management-system' ); ?>">
 					</div>
-				</div>
+				</div> -->
 
 				<div class="wlsm-form-group wlsm-row wlsm-mb-2">
 					<div class="wlsm-col-4">
