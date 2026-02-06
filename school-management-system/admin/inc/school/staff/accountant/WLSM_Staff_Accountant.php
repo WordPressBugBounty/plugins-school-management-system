@@ -858,7 +858,7 @@ class WLSM_Staff_Accountant
 
 		// Ordering.
 		$columns = array('p.receipt_number', 'p.amount', 'p.payment_method', 'p.transaction_id', 'p.created_at', 'p.note');
-		if (esc_sql($_POST['order']) && esc_sql($columns[$_POST['order']['0']['column']])) {
+		if (isset($_POST['order']) && esc_sql($_POST['order']) && isset($columns[$_POST['order']['0']['column']]) && esc_sql($columns[$_POST['order']['0']['column']])) {
 			$order_by = sanitize_text_field(esc_sql($columns[$_POST['order']['0']['column']]));
 			$order_dir = sanitize_text_field(esc_sql($_POST['order']['0']['dir']));
 
@@ -1281,7 +1281,7 @@ class WLSM_Staff_Accountant
 
 		// Ordering.
 		$columns = array('p.receipt_number', 'p.amount', 'p.payment_method', 'p.transaction_id', 'p.created_at', 'p.note', 'i.label', 'sr.name', 'sr.admission_number', 'c.label', 'se.label', 'sr.enrollment_number', 'sr.phone', 'sr.father_name', 'sr.father_phone');
-		if (esc_sql($_POST['order']) && esc_sql($columns[$_POST['order']['0']['column']])) {
+		if (isset($_POST['order']) && esc_sql($_POST['order']) && isset($columns[$_POST['order']['0']['column']]) && esc_sql($columns[$_POST['order']['0']['column']])) {
 			$order_by = sanitize_text_field(esc_sql($columns[$_POST['order']['0']['column']]));
 			$order_dir = sanitize_text_field(esc_sql($_POST['order']['0']['dir']));
 

@@ -77,7 +77,7 @@ $email_invoice_generated_placeholders = WLSM_Email::invoice_generated_placeholde
 						'textarea_rows' => 10,
 						'wpautop'       => false,
 					);
-					wp_editor( wp_kses_post( stripslashes( $email_invoice_generated_body ) ), 'wlsm_email_invoice_generated_body', $settings );
+				wp_editor( wp_kses_post( stripslashes( $email_invoice_generated_body ?? '' ) ), 'wlsm_email_invoice_generated_body', $settings );
 					?>
 				</div>
 			</div>

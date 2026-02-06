@@ -77,7 +77,7 @@ $email_online_fee_submission_placeholders = WLSM_Email::online_fee_submission_pl
 						'textarea_rows' => 10,
 						'wpautop'       => false,
 					);
-					wp_editor( wp_kses_post( stripslashes( $email_online_fee_submission_body ) ), 'wlsm_email_online_fee_submission_body', $settings );
+					wp_editor( wp_kses_post( stripslashes( $email_online_fee_submission_body ?? '' ) ), 'wlsm_email_online_fee_submission_body', $settings );
 					?>
 				</div>
 			</div>

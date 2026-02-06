@@ -2,10 +2,10 @@
 Plugin name: School Management System
 Contributors: weblizar
 Donate link: https://weblizar.com
-Tags: school, student management, student, class, learning, school management, school management system, education, teacher, staff, accountant, fees management, Learning Management
+Tags: School Management, Student Management, Learning Management, Fees Management, Education
 Requires at least: 7.4
-Tested up to: 6.8.1
-Stable tag: 5.2
+Tested up to: 6.9
+Stable tag: 5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,7 +72,7 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 * Automatic notifications via email carrier.
 * Automatic notifications via SMS carrier.
 
-* **Send SMS notifications via** - **Textlocal, Twilio ( International ), Intechno Msg ( Weblizar ), Intechno Point ( Weblizar), Msg91, SMS Striker, India Text, Gatewaysms, Bulksmsgateway ( India ), EBulkSMS,  Pob Talk, witchportlimited (nigeria), Kivalosolutions SMS, tecxsms (ghana), SendPK ( Pakistan ), Smartsms, SMS Portal Futuresol ( Pakistan ), Vinuthan, Logixsms, bdbulksms, extsms, SMS IR  (iran) etc**.
+* **Send SMS notifications via** - **Textlocal, Twilio ( International ), Intechno Msg ( Weblizar ), Intechno Point ( Weblizar), Msg91, SMS Striker, India Text, Gatewaysms, Bulksmsgateway ( India ), EBulkSMS,  Pob Talk, witchportlimited (nigeria), Kivalosolutions SMS, tecxsms (ghana), SendPK ( Pakistan ), Smartsms, SMS Portal Futuresol ( Pakistan ), Vinuthan, Logixsms, bdbulksms, extsms, SMS IR  (iran), tecxsms (Ghana ),Egosms (Uganda) etc**.
 
 = Multiple Payment Gateways =
 
@@ -80,13 +80,13 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 
 = School Management Pro Features =
 
-* **Multi-School** - Add multiple schools and manage the school activity in single dashboard and assign the school admin.
+* **Super Admin** - Super admin can add multiple schools, school admin can manage the all school activity in single dashboard.
 
-* **School Admin** -  Admin can manage the single school activities.
+* **School Admin** - School Admin can manage the all school releted activities. 
 
-* **School Category** -  You can create the school category and categorize the your schools.
+* **Classes** - Super admin create unlimited classes according to school wise and Assign the class to each school. 
 
-* **Classes and Sections** - Add classes. Assign classes to each school. Add class sections.
+* **Sections** - School admin  are create the unlimited Sections and also  assign the Sections to  class wise. 
 
 * **Activities** - Create unlimited extra acitvites just like sport, swimming, Games and according to activities wise set the cost of activity.
 
@@ -124,7 +124,7 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 
 * **Email & SMS Templates** - Email & SMS template for Student Admission, Invoice Generation, Online Fee Submission, Off-line Fee Submission.
 
-* **SMS Notifications** - Textlocal, Twilio ( International ), Intechno Msg ( Weblizar ), Intechno Point ( Weblizar), Msg91, SMS Striker, India Text, Gatewaysms, Bulksmsgateway ( India ), EBulkSMS,  Pob Talk, witchportlimited (nigeria), Kivalosolutions SMS, tecxsms (ghana), SendPK ( Pakistan ), Smartsms, SMS Portal Futuresol ( Pakistan ), Vinuthan, Logixsms, bdbulksms, extsms, SMS IR  (iran)  etc.
+* **SMS Notifications** - Twilio, Nexmo, TextLocal ( International ), MsgClub, SMS Striker,  Point SMS , Msg91, Vinuthan, India Text, Bulksmsgateway, Getewaysms - ( India ), Ebulksms,  Pob Talk, switchportlimited - ( Nigeria ),  Kivalosolutions SMS, tecxsms - ( Ghana ),  SendPk, SMS Portal Futuresol  - (Pakistan ) ,SMS IR  (Iran), EgoSMS ( Uganda ) and much more...
 
 * **Export Records to CSV** - Export student records, inquiries, expense, income and more.
 
@@ -169,6 +169,10 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 == Changelog ==
 
 For more information, see [Weblizar](https://www.weblizar.com/)
+
+= 5.3 =[12-12-2025]
+* Tested with Wordpress 6.9
+* Tested upto PHP 8.4
 
 = 5.2 =[10-07-2025]
 * Remove unwanted last name field from inquiry shortcode.

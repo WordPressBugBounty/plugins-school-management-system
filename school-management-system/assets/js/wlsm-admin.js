@@ -1032,7 +1032,7 @@
 						content: response.data.html,
 						theme: 'bootstrap',
 						useBootstrap: true,
-						columnClass: 'xlarge',
+						columnClass: 'medium',
 						containerFluid: true,
 						backgroundDismiss: true
 					});
