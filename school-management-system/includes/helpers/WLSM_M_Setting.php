@@ -6,7 +6,7 @@ class WLSM_M_Setting {
 		global $wpdb;
 		$school_logo = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "general"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "general"', WLSM_SETTINGS, $school_id ) );
 		if ( $settings ) {
 			$settings    = unserialize( $settings->setting_value );
 			$school_logo = isset( $settings['school_logo'] ) ? $settings['school_logo'] : '';
@@ -21,7 +21,7 @@ class WLSM_M_Setting {
 		global $wpdb;
 		$carrier = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "email"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "email"', WLSM_SETTINGS, $school_id ) );
 		if ( $settings ) {
 			$settings = unserialize( $settings->setting_value );
 			$carrier  = isset( $settings['carrier'] ) ? $settings['carrier'] : '';
@@ -36,12 +36,12 @@ class WLSM_M_Setting {
 	public static function get_settings_registration( $school_id ) {
 		global $wpdb;
 
-		$form_title            = esc_html__( 'Online Registration', 'school-management' );
+		$form_title            = esc_html__( 'Online Registration', 'school-management-system' );
 		$login_user            = 0;
 		$redirect_url          = '';
 		$create_invoice        = 1;
 		$auto_admission_number = 0; // Auto generate admission number when registering student from back-end.
-		$auto_roll_number      = 0; // Auto generate roll nubmer 
+		$auto_roll_number      = 0; // Auto generate roll nubmer
 		$admin_email           = '';
 		$admin_phone           = '';
 		$success_message       = '';
@@ -65,9 +65,9 @@ class WLSM_M_Setting {
 		$survey            = 0;
 		$fees              = 0;
 
-		$default_success_message = esc_html__( 'Your registration has been submitted. Please check your email.', 'school-management' );
+		$default_success_message = esc_html__( 'Your registration has been submitted. Please check your email.', 'school-management-system' );
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "registration"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "registration"', WLSM_SETTINGS, $school_id ) );
 		if ( $settings ) {
 			$settings              = unserialize( $settings->setting_value );
 			$form_title            = isset( $settings['form_title'] ) ? $settings['form_title'] : '';
@@ -140,7 +140,7 @@ class WLSM_M_Setting {
 		$from_name  = NULL;
 		$from_email = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "wp_mail"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "wp_mail"', WLSM_SETTINGS, $school_id ) );
 		if ( $settings ) {
 			$settings  = unserialize( $settings->setting_value );
 			$from_name = isset( $settings['from_name'] ) ? $settings['from_name'] : '';
@@ -162,7 +162,7 @@ class WLSM_M_Setting {
 		$encryption = NULL;
 		$port       = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "smtp"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "smtp"', WLSM_SETTINGS, $school_id ) );
 
 		if ( $settings ) {
 			$settings   = unserialize( $settings->setting_value );
@@ -191,7 +191,7 @@ class WLSM_M_Setting {
 		$subject = '';
 		$body    = '';
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "email_student_admission"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "email_student_admission"', WLSM_SETTINGS, $school_id ) );
 
 		if ( $settings ) {
 			$settings = unserialize( $settings->setting_value );
@@ -214,7 +214,7 @@ class WLSM_M_Setting {
 		$subject = NULL;
 		$body    = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "email_invoice_generated"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "email_invoice_generated"', WLSM_SETTINGS, $school_id ) );
 
 		if ( $settings ) {
 			$settings = unserialize( $settings->setting_value );
@@ -237,7 +237,7 @@ class WLSM_M_Setting {
 		$subject = NULL;
 		$body    = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "email_online_fee_submission"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "email_online_fee_submission"', WLSM_SETTINGS, $school_id ) );
 
 		if ( $settings ) {
 			$settings = unserialize( $settings->setting_value );
@@ -260,7 +260,7 @@ class WLSM_M_Setting {
 		$subject = NULL;
 		$body    = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "email_offline_fee_submission"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "email_offline_fee_submission"', WLSM_SETTINGS, $school_id ) );
 
 		if ( $settings ) {
 			$settings = unserialize( $settings->setting_value );
@@ -283,7 +283,7 @@ class WLSM_M_Setting {
 		$publishable_key = NULL;
 		$secret_key      = NULL;
 
-		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM ' . WLSM_SETTINGS . ' WHERE school_id = %d AND setting_key = "stripe"', $school_id ) );
+		$settings = $wpdb->get_row( $wpdb->prepare( 'SELECT ID, setting_value FROM %i WHERE school_id = %d AND setting_key = "stripe"', WLSM_SETTINGS, $school_id ) );
 
 		if ( $settings ) {
 			$settings        = unserialize( $settings->setting_value );

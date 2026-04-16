@@ -13,7 +13,11 @@ foreach ( $schools_assigned as $school ) {
 
 $school_ids_string = implode( ',', $school_ids );
 
-$schools = $wpdb->get_results( 'SELECT s.ID, s.label, s.phone, s.is_active, COUNT(DISTINCT cs.ID) as classes_count FROM ' . WLSM_SCHOOLS . ' as s LEFT OUTER JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.school_id = s.ID WHERE s.ID IN (' . sanitize_text_field( $school_ids_string ) . ') GROUP BY s.ID' );
+$how_many = count( $school_ids );
+$placeholders = array_fill( 0, $how_many, '%d' );
+$format = implode( ',', $placeholders );
+// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $format is built solely from safely generated placeholders (%d).
+$schools = $wpdb->get_results( $wpdb->prepare( 'SELECT s.ID, s.label, s.phone, s.is_active, COUNT(DISTINCT cs.ID) as classes_count FROM %i as s LEFT OUTER JOIN %i as cs ON cs.school_id = s.ID WHERE s.ID IN (' . $format . ') GROUP BY s.ID', array_merge( array( WLSM_SCHOOLS, WLSM_CLASS_SCHOOL ), $school_ids ) ) );
 ?>
 <div class="wlsm container-fluid">
 	<div class="card col">

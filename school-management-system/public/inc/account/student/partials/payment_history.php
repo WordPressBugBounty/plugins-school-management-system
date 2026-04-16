@@ -8,23 +8,19 @@ if ( isset( $change_action ) ) {
 
 $payments_per_page = 10;
 
-$payments_query = 'SELECT sr.ID as student_id, sr.name as student_name, sr.admission_number, sr.phone, sr.father_name, sr.father_phone, p.ID, p.receipt_number, p.amount, p.payment_method, p.transaction_id, p.created_at, p.note, p.invoice_label, p.invoice_payable, p.invoice_id, i.label as invoice_title, c.label as class_label, se.label as section_label FROM ' . WLSM_PAYMENTS . ' as p 
-	JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = p.school_id 
-	JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = p.student_record_id 
-	JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-	JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-	JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-	JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-	LEFT OUTER JOIN ' . WLSM_INVOICES . ' as i ON i.ID = p.invoice_id 
-	WHERE sr.ID = %d GROUP BY p.ID';
-
-$payments_total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(1) FROM ({$payments_query}) AS combined_table", $student->ID ) );
+$payments_total = $wpdb->get_var(
+	$wpdb->prepare( 'SELECT COUNT(DISTINCT p.ID) FROM %i as p JOIN %i as s ON s.ID = p.school_id JOIN %i as sr ON sr.ID = p.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id LEFT OUTER JOIN %i as i ON i.ID = p.invoice_id WHERE sr.ID = %d', WLSM_PAYMENTS, WLSM_SCHOOLS, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_INVOICES, $student->ID )
+);
 
 $payments_page = isset( $_GET['payments_page'] ) ? absint( $_GET['payments_page'] ) : 1;
 
 $payments_page_offset = ( $payments_page * $payments_per_page ) - $payments_per_page;
 
-$payments = $wpdb->get_results( $wpdb->prepare( $payments_query . ' ORDER BY p.ID DESC LIMIT %d, %d', $student->ID, $payments_page_offset, $payments_per_page ) );
+$payments = $wpdb->get_results(
+	$wpdb->prepare( 'SELECT sr.ID as student_id, sr.name as student_name, sr.admission_number, sr.phone, sr.father_name, sr.father_phone, p.ID, p.receipt_number, p.amount, p.payment_method, p.transaction_id, p.created_at, p.note, p.invoice_label, p.invoice_payable, p.invoice_id, i.label as invoice_title, c.label as class_label, se.label as section_label FROM %i as p JOIN %i as s ON s.ID = p.school_id JOIN %i as sr ON sr.ID = p.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id LEFT OUTER JOIN %i as i ON i.ID = p.invoice_id WHERE sr.ID = %d GROUP BY p.ID ORDER BY p.ID DESC LIMIT %d, %d', WLSM_PAYMENTS, WLSM_SCHOOLS, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_INVOICES, $student->ID,
+		$payments_page_offset,
+		$payments_per_page )
+);
 ?>
 <div class="wlsm-content-area wlsm-section-payment-history wlsm-student-payment-history">
 	<div class="wlsm-st-main-title">
@@ -100,14 +96,16 @@ $payments = $wpdb->get_results( $wpdb->prepare( $payments_query . ' ORDER BY p.I
 		</div>
 		<div class="wlsm-text-right wlsm-font-medium wlsm-font-bold wlsm-mt-2">
 		<?php
-		echo paginate_links(
-			array(
-				'base'      => add_query_arg( 'payments_page', '%#%' ),
-				'format'    => '',
-				'prev_text' => '&laquo;',
-				'next_text' => '&raquo;',
-				'total'     => ceil( $payments_total / $payments_per_page ),
-				'current'   => $payments_page,
+		echo wp_kses_post(
+			paginate_links(
+				array(
+					'base'      => add_query_arg( 'payments_page', '%#%' ),
+					'format'    => '',
+					'prev_text' => '&laquo;',
+					'next_text' => '&raquo;',
+					'total'     => ceil( $payments_total / $payments_per_page ),
+					'current'   => $payments_page,
+				)
 			)
 		);
 		?>

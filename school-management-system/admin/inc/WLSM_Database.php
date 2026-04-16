@@ -11,8 +11,8 @@ class WLSM_Database {
 		$charset_collate = $wpdb->get_charset_collate();
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$wpdb->query( "ALTER TABLE " . WLSM_USERS . " ENGINE = InnoDB" );
-		$wpdb->query( "ALTER TABLE " . WLSM_POSTS . " ENGINE = InnoDB" );
+		$wpdb->query( $wpdb->prepare( "ALTER TABLE %i ENGINE = InnoDB", WLSM_USERS ) );
+		$wpdb->query( $wpdb->prepare( "ALTER TABLE %i ENGINE = InnoDB", WLSM_POSTS ) );
 
 		/* Create schools table */
 		$sql = "CREATE TABLE IF NOT EXISTS " . WLSM_SCHOOLS . " (
@@ -57,13 +57,13 @@ class WLSM_Database {
 		dbDelta( $sql );
 
 		// Insert default school if there is no school.
-		$schools_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . WLSM_SCHOOLS );
+		$schools_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', WLSM_SCHOOLS ) );
 		if ( ! $schools_count ) {
 			$default_school_id = self::insert_default_school();
 		}
 
 		// Insert default classes if there is no class.
-		$classes_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . WLSM_CLASSES );
+		$classes_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', WLSM_CLASSES ) );
 		if ( ! $classes_count ) {
 			self::insert_default_classes();
 		}
@@ -99,13 +99,13 @@ class WLSM_Database {
 		dbDelta( $sql );
 
 		$session_id     = NULL;
-		$sessions_count = $wpdb->get_var( 'SELECT COUNT(*) FROM ' . WLSM_SESSIONS );
+		$sessions_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', WLSM_SESSIONS ) );
 		if ( ! $sessions_count ) {
 			/* Insert Default Session */
 			$session_years = 1;
 			$current_session_exists = false;
 			for ( $i = 0; $i <= $session_years; $i++ ) {
-				$current_year = absint( date('Y') ) + $i;
+				$current_year = absint( gmdate( 'Y' ) ) + $i;
 				$next_year    = $current_year + 1;
 				$start_date   = $current_year . '-4-1';
 				$end_date     = $next_year . '-3-31';
@@ -148,9 +148,16 @@ class WLSM_Database {
 				) ENGINE=InnoDB " . $charset_collate;
 		dbDelta( $sql );
 
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_INQUIRIES . "' AND COLUMN_NAME = 'last_name'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_INQUIRIES . " ADD last_name varchar(60) DEFAULT NULL");
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_INQUIRIES,
+				'last_name'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD last_name varchar(60) DEFAULT NULL', WLSM_INQUIRIES ) );
 		}
 
 		/* Create roles table */
@@ -267,48 +274,90 @@ class WLSM_Database {
 		dbDelta( $sql );
 
 		/* Add parent_user_id column if not exists to student_records table */
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_STUDENT_RECORDS . "' AND COLUMN_NAME = 'parent_user_id'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD parent_user_id bigint(20) UNSIGNED DEFAULT NULL AFTER user_id");
-			$wpdb->query("CREATE INDEX parent_user_id ON " . WLSM_STUDENT_RECORDS . " (parent_user_id)");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD FOREIGN KEY (parent_user_id) REFERENCES " . WLSM_USERS . " (ID) ON DELETE SET NULL");
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_STUDENT_RECORDS,
+				'parent_user_id'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD parent_user_id bigint(20) UNSIGNED DEFAULT NULL AFTER user_id', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'CREATE INDEX parent_user_id ON %i (parent_user_id)', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD FOREIGN KEY (parent_user_id) REFERENCES %i (ID) ON DELETE SET NULL', WLSM_STUDENT_RECORDS, WLSM_USERS ) );
 		}
 
 		/* Add city, state, country columns if not exists to student_records table */
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_STUDENT_RECORDS . "' AND COLUMN_NAME = 'city'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD city varchar(60) DEFAULT NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD state varchar(60) DEFAULT NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD country varchar(60) DEFAULT NULL");
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_STUDENT_RECORDS,
+				'city'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD city varchar(60) DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD state varchar(60) DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD country varchar(60) DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
 		}
 
-		/* Add city, state, country columns if not exists to student_records table */
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_STUDENT_RECORDS . "' AND COLUMN_NAME = 'student_type'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD student_type varchar(60) DEFAULT NULL");
+		/* Add student_type column if not exists to student_records table */
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_STUDENT_RECORDS,
+				'student_type'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD student_type varchar(60) DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
 		}
 
 		/* Add id_number, id_proof, parent_id_proof, note columns if not exists to student_records table */
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_STUDENT_RECORDS . "' AND COLUMN_NAME = 'id_number'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD id_number text DEFAULT NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD id_proof bigint(20) UNSIGNED DEFAULT NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD parent_id_proof bigint(20) UNSIGNED DEFAULT NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD FOREIGN KEY (id_proof) REFERENCES " . WLSM_POSTS . " (ID) ON DELETE SET NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD FOREIGN KEY (parent_id_proof) REFERENCES " . WLSM_POSTS . " (ID) ON DELETE SET NULL");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD note text DEFAULT NULL");
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_STUDENT_RECORDS,
+				'id_number'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD id_number text DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD id_proof bigint(20) UNSIGNED DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD parent_id_proof bigint(20) UNSIGNED DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD FOREIGN KEY (id_proof) REFERENCES %i (ID) ON DELETE SET NULL', WLSM_STUDENT_RECORDS, WLSM_POSTS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD FOREIGN KEY (parent_id_proof) REFERENCES %i (ID) ON DELETE SET NULL', WLSM_STUDENT_RECORDS, WLSM_POSTS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD note text DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
 		}
 
 		/* Add gdpr_agreed, from_front columns if not exists to student_records table */
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_STUDENT_RECORDS . "' AND COLUMN_NAME = 'gdpr_agreed'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD gdpr_agreed tinyint(1) NOT NULL DEFAULT '0'");
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD from_front tinyint(1) NOT NULL DEFAULT '0'");
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_STUDENT_RECORDS,
+				'gdpr_agreed'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD gdpr_agreed tinyint(1) NOT NULL DEFAULT \'0\'', WLSM_STUDENT_RECORDS ) );
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD from_front tinyint(1) NOT NULL DEFAULT \'0\'', WLSM_STUDENT_RECORDS ) );
 		}
 
-		$row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" . DB_NAME . "' AND TABLE_NAME = '" . WLSM_STUDENT_RECORDS . "' AND COLUMN_NAME = 'survey'");
-		if (empty($row)) {
-			$wpdb->query("ALTER TABLE " . WLSM_STUDENT_RECORDS . " ADD survey varchar(60) DEFAULT NULL");
+		$row = $wpdb->get_results(
+			$wpdb->prepare(
+				'SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+				DB_NAME,
+				WLSM_STUDENT_RECORDS,
+				'survey'
+			)
+		);
+		if ( empty( $row ) ) {
+			$wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ADD survey varchar(60) DEFAULT NULL', WLSM_STUDENT_RECORDS ) );
 		}
 
 		/* Create promotions table */
@@ -469,8 +518,7 @@ class WLSM_Database {
 	private static function insert_default_classes() {
 		global $wpdb;
 
-		$sql = "INSERT INTO `" . WLSM_CLASSES . "` (`label`) VALUES ('1st'),('2nd'),('3rd'),('4th'),('5th'),('6th'),('7th'),('8th'),('9th'),('10th'),('11th'),('12th');";
-		$wpdb->query( $sql );
+		$wpdb->query( $wpdb->prepare( "INSERT INTO %i (`label`) VALUES ('1st'),('2nd'),('3rd'),('4th'),('5th'),('6th'),('7th'),('8th'),('9th'),('10th'),('11th'),('12th');", WLSM_CLASSES ) );
 	}
 
 	public static function set_default_options( $session_id = NULL ) {
@@ -493,23 +541,23 @@ class WLSM_Database {
 	public static function remove_data() {
 		global $wpdb;
 
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_ADMIN_SUBJECT );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_NOTICES );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_SUBJECTS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_PAYMENTS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_INVOICES );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_PROMOTIONS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_STUDENT_RECORDS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_SECTIONS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_ADMINS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_STAFF );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_ROLES );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_INQUIRIES );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_SESSIONS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_CLASS_SCHOOL );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_CLASSES );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_SETTINGS );
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . WLSM_SCHOOLS );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_ADMIN_SUBJECT ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_NOTICES ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_SUBJECTS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_PAYMENTS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_INVOICES ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_PROMOTIONS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_STUDENT_RECORDS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_SECTIONS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_ADMINS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_STAFF ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_ROLES ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_INQUIRIES ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_SESSIONS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_CLASS_SCHOOL ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_CLASSES ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_SETTINGS ) );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', WLSM_SCHOOLS ) );
 
 		delete_metadata( 'user', 0, 'wlsm_school_id', '', true );
 		delete_metadata( 'user', 0, 'wlsm_current_session', '', true );

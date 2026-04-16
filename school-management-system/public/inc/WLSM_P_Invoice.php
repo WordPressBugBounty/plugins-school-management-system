@@ -85,12 +85,9 @@ class WLSM_P_Invoice {
 
 			// Get class students in a session with the name provided.
 			$students = $wpdb->get_results(
-				$wpdb->prepare( 'SELECT sr.ID, sr.name, sr.enrollment_number, c.label as class_label, se.label as section_label, sr.roll_number FROM ' . WLSM_STUDENT_RECORDS . ' as sr 
-					JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-					JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-					JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-					JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-					WHERE sr.session_id = %d AND se.class_school_id = %d AND sr.name LIKE "%s" AND sr.is_active = 1 GROUP BY sr.ID', $session_id, $class_school_id, '%' . $wpdb->esc_like( $name ) . '%' )
+				$wpdb->prepare( 'SELECT sr.ID, sr.name, sr.enrollment_number, c.label as class_label, se.label as section_label, sr.roll_number FROM %i as sr JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id JOIN %i as ss ON ss.ID = sr.session_id WHERE sr.session_id = %d AND se.class_school_id = %d AND sr.name LIKE %s AND sr.is_active = 1 GROUP BY sr.ID', WLSM_STUDENT_RECORDS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_SESSIONS, $session_id,
+					$class_school_id,
+					'%' . $wpdb->esc_like( $name ) . '%' )
 			);
 
 		} catch ( Exception $exception ) {

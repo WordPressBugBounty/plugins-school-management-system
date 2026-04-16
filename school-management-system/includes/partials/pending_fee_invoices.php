@@ -62,7 +62,7 @@ if ( count( $invoices ) ) {
 								array( 'span' => array( 'class' => array() ) )
 							);
 						if ( WLSM_M_Invoice::get_paid_key() !== $row->status ) {
-							echo '<br><a href="#" class="wlsm-view-student-pending-invoice" data-invoice="' . $row->ID . '" data-nonce="' . esc_attr( wp_create_nonce( 'view-student-invoice-' . $row->ID ) ) . '">' . esc_html__( 'Pay Now', 'school-management-system' ) . '</a>';
+							echo '<br><a href="#" class="wlsm-view-student-pending-invoice" data-invoice="' . esc_attr( $row->ID ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'view-student-invoice-' . $row->ID ) ) . '">' . esc_html__( 'Pay Now', 'school-management-system' ) . '</a>';
 						}
 						?>
 					</td>

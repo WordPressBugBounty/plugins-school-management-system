@@ -5,15 +5,19 @@ global $wpdb;
 
 $notices_per_page = 10;
 
-$notices_query = 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active, n.created_at FROM ' . WLSM_NOTICES . ' as n WHERE n.school_id = %d AND n.is_active = 1 GROUP BY n.ID';
-
-$notices_total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(1) FROM ({$notices_query}) AS combined_table", $school_id ) );
+$notices_total = $wpdb->get_var(
+	$wpdb->prepare( 'SELECT COUNT(DISTINCT n.ID) FROM %i as n WHERE n.school_id = %d AND n.is_active = 1', WLSM_NOTICES, $school_id )
+);
 
 $notices_page = isset( $_GET['notices_page'] ) ? absint( $_GET['notices_page'] ) : 1;
 
 $notices_page_offset = ( $notices_page * $notices_per_page ) - $notices_per_page;
 
-$notices = $wpdb->get_results( $wpdb->prepare( $notices_query . ' ORDER BY n.ID DESC LIMIT %d, %d', $school_id, $notices_page_offset, $notices_per_page ) );
+$notices = $wpdb->get_results(
+	$wpdb->prepare( 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active, n.created_at FROM %i as n WHERE n.school_id = %d AND n.is_active = 1 GROUP BY n.ID ORDER BY n.ID DESC LIMIT %d, %d', WLSM_NOTICES, $school_id,
+		$notices_page_offset,
+		$notices_per_page )
+);
 ?>
 <div class="wlsm-content-area wlsm-section-noticeboard wlsm-student-noticeboard">
 	<div class="wlsm-st-main-title">
@@ -64,14 +68,16 @@ $notices = $wpdb->get_results( $wpdb->prepare( $notices_query . ' ORDER BY n.ID 
 		</ul>
 		<div class="wlsm-text-right wlsm-font-medium wlsm-font-bold wlsm-mt-2">
 		<?php
-		echo paginate_links(
-			array(
-				'base'      => add_query_arg( 'notices_page', '%#%' ),
-				'format'    => '',
-				'prev_text' => '&laquo;',
-				'next_text' => '&raquo;',
-				'total'     => ceil( $notices_total / $notices_per_page ),
-				'current'   => $notices_page,
+		echo wp_kses_post(
+			paginate_links(
+				array(
+					'base'      => add_query_arg( 'notices_page', '%#%' ),
+					'format'    => '',
+					'prev_text' => '&laquo;',
+					'next_text' => '&raquo;',
+					'total'     => ceil( $notices_total / $notices_per_page ),
+					'current'   => $notices_page,
+				)
 			)
 		);
 		?>

@@ -104,7 +104,7 @@ $notices = WLSM_M_Staff_Class::get_school_notices($school_id, 7);
 				</div>
 				<ul class="wlsm-st-details-list">
 					<li>
-						<span class="wlsm-st-details-list-key"><?php esc_html_e('Name'); ?>:</span>
+						<span class="wlsm-st-details-list-key"><?php esc_html_e('Name', 'school-management-system'); ?>:</span>
 						<span class="wlsm-st-details-list-value"><?php echo esc_html($student_name); ?></span>
 					</li>
 					<li>

@@ -88,9 +88,9 @@ class WLSM_Login_Widget extends WP_Widget {
 
 	public function update( $new_instance, $old_instance ) {
 		$instance                        = $old_instance;
-		$instance['title']               = strip_tags( $new_instance['title'] );
-		$instance['login_redirect_url']  = strip_tags( $new_instance['login_redirect_url'] );
-		$instance['logout_redirect_url'] = strip_tags( $new_instance['logout_redirect_url'] );
+		$instance['title']               = wp_strip_all_tags( $new_instance['title'] );
+		$instance['login_redirect_url']  = wp_strip_all_tags( $new_instance['login_redirect_url'] );
+		$instance['logout_redirect_url'] = wp_strip_all_tags( $new_instance['logout_redirect_url'] );
 
 		return $instance;
 	}

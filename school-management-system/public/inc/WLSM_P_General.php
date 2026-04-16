@@ -72,7 +72,7 @@ class WLSM_P_General {
 			$class_school = WLSM_M_Staff_Class::get_class( $school_id, $class_id );
 
 			if ( ! $class_school ) {
-				throw new Exception( esc_html__( 'Class not found.', 'school-management' ) );
+				throw new Exception( esc_html__( 'Class not found.', 'school-management-system' ) );
 			}
 
 			$class_school_id = $class_school->ID;
@@ -80,7 +80,7 @@ class WLSM_P_General {
 			$sections = WLSM_M_Staff_General::fetch_class_sections( $class_school_id );
 
 			if ( $all_sections ) {
-				$all_sections = (object) array( 'ID' => '', 'label' => esc_html__( 'All Sections', 'school-management' ) );
+				$all_sections = (object) array( 'ID' => '', 'label' => esc_html__( 'All Sections', 'school-management-system' ) );
 				array_unshift( $sections , $all_sections );
 			}
 

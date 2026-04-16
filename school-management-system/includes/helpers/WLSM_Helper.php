@@ -198,10 +198,10 @@ class WLSM_Helper {
 		$buffer = ob_get_clean();
 		if ( ! empty( $buffer ) ) {
 			if ( $show_buffer_error ) {
-				throw new Exception( $buffer );
+				throw new Exception( esc_html( $buffer ) );
 			}
 
-			throw new Exception( esc_html__( 'Unexpected error occurred!', 'school-management' ) );
+			throw new Exception( esc_html__( 'Unexpected error occurred!', 'school-management-system' ) );
 		}
 	}
 
@@ -283,10 +283,10 @@ class WLSM_Helper {
 	}
 	public static function registration_success_message_placeholders() {
 		return array(
-			'[NAME]'  => esc_html__( 'Student Name', 'school-management' ),
-			'[PHONE]' => esc_html__( 'Phone', 'school-management' ),
-			'[EMAIL]' => esc_html__( 'Email', 'school-management' ),
-			'[CLASS]' => esc_html__( 'Class', 'school-management' )
+			'[NAME]'  => esc_html__( 'Student Name', 'school-management-system' ),
+			'[PHONE]' => esc_html__( 'Phone', 'school-management-system' ),
+			'[EMAIL]' => esc_html__( 'Email', 'school-management-system' ),
+			'[CLASS]' => esc_html__( 'Class', 'school-management-system' )
 		);
 	}
 }

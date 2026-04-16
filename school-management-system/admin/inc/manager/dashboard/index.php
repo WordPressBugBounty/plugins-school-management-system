@@ -17,7 +17,7 @@ if ( $user_info['current_school'] ) {
 }
 
 global $wpdb;
-$schools = $wpdb->get_results( 'SELECT s.ID, s.label, s.phone, s.is_active, COUNT(cs.ID) as classes_count, s.is_active FROM ' . WLSM_SCHOOLS . ' as s LEFT OUTER JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.school_id = s.ID GROUP BY s.ID LIMIT 1' );
+$schools = $wpdb->get_results( $wpdb->prepare( 'SELECT s.ID, s.label, s.phone, s.is_active, COUNT(cs.ID) as classes_count, s.is_active FROM %i as s LEFT OUTER JOIN %i as cs ON cs.school_id = s.ID GROUP BY s.ID LIMIT 1', WLSM_SCHOOLS, WLSM_CLASS_SCHOOL ) );
 ?>
 
 <div class="wlsm container-fluid">

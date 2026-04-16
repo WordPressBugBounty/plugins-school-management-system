@@ -37,7 +37,7 @@ class WLSM_Staff_School {
 			$user_id = get_current_user_id();
 
 			// Check if staff exists.
-			$staff = $wpdb->get_row( $wpdb->prepare( 'SELECT sf.ID, sf.role FROM ' . WLSM_STAFF . ' as sf WHERE sf.school_id = %d AND sf.user_id = %d', $school_id, $user_id ) );
+			$staff = $wpdb->get_row( $wpdb->prepare( 'SELECT sf.ID, sf.role FROM %i as sf WHERE sf.school_id = %d AND sf.user_id = %d', WLSM_STAFF, $school_id, $user_id ) );
 
 			if ( ! $staff ) {
 				die();

@@ -17,7 +17,8 @@ class WLSM_Class
 		$page_url = WLSM_M_Class::get_page_url();
 
 		// Create a prepared statement to prevent SQL injection.
-		$query = $wpdb->prepare(WLSM_M_Class::fetch_query());
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_query is built from safely prepared fragments.
+		$query = WLSM_M_Class::fetch_query();
 
 		$query_filter = $query;
 
@@ -29,12 +30,10 @@ class WLSM_Class
 
 		// Searching.
 		$condition = '';
-		if (esc_sql($_POST['search']['value'])) {
-			$search_value = sanitize_text_field(esc_sql($_POST['search']['value']));
-			if ('' !== $search_value) {
-				$condition .= $wpdb->prepare('(c.label LIKE "%%%s%%")', $search_value);
-				$query_filter .= (' HAVING ' . $condition);
-			}
+		if (isset($_POST['search']['value']) && '' !== $_POST['search']['value']) {
+			$search_value = sanitize_text_field($_POST['search']['value']);
+			$condition .= $wpdb->prepare('(c.label LIKE %s)', '%' . $wpdb->esc_like($search_value) . '%');
+			$query_filter .= (' HAVING ' . $condition);
 		}
 
 
@@ -74,16 +73,19 @@ class WLSM_Class
 		$rows_query = WLSM_M_Class::fetch_query_count();
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and $condition are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' WHERE (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -157,9 +159,9 @@ class WLSM_Class
 
 			// Checks if class already exists with this label.
 			if ($class_id) {
-				$class_exist = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) as count FROM ' . WLSM_CLASSES . ' as c WHERE c.label = %s AND c.ID != %d', $label, $class_id));
+				$class_exist = $wpdb->get_var($wpdb->prepare( 'SELECT COUNT(*) as count FROM %i as c WHERE c.label = %s AND c.ID != %d', WLSM_CLASSES, $label, $class_id ));
 			} else {
-				$class_exist = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) as count FROM ' . WLSM_CLASSES . ' as c WHERE c.label = %s', $label));
+				$class_exist = $wpdb->get_var($wpdb->prepare( 'SELECT COUNT(*) as count FROM %i as c WHERE c.label = %s', WLSM_CLASSES, $label ));
 			}
 
 			if ($class_exist) {
@@ -188,7 +190,7 @@ class WLSM_Class
 
 				// Checks if update or insert.
 				if ($class_id) {
-					$data['updated_at'] = date('Y-m-d H:i:s');
+					$data['updated_at'] = current_time('mysql');
 
 					$success = $wpdb->update(WLSM_CLASSES, $data, array('ID' => $class_id));
 					$message = esc_html__('Class updated successfully.', 'school-management-system');

@@ -17,45 +17,26 @@ $invoices_page_url = WLSM_M_Staff_Accountant::get_invoices_page_url();
 if ( WLSM_M_Role::check_permission( array( 'manage_invoices' ), $current_school['permissions'] ) ) {
 	// Total Invoices.
 	$total_invoices_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d', $school_id, $session_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id )
 	);
 
 	// Paid Invoices.
 	$invoices_paid_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND i.status = "%s"', $school_id, $session_id, WLSM_M_Invoice::get_paid_key() )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND i.status = %s', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, WLSM_M_Invoice::get_paid_key() )
 	);
 
 	// Unpaid Invoices.
 	$invoices_unpaid_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND i.status = "%s"', $school_id, $session_id, WLSM_M_Invoice::get_unpaid_key() )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND i.status = %s', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, WLSM_M_Invoice::get_unpaid_key() )
 	);
 
 	// Invoices Partially Paid.
 	$invoices_partially_paid_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND i.status = "%s"', $school_id, $session_id, WLSM_M_Invoice::get_partially_paid_key() )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND i.status = %s', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, WLSM_M_Invoice::get_partially_paid_key() )
 	);
 
 	// Total Payments.
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_payments_query_count is built from safely prepared fragments.
 	$total_payments_count = $wpdb->get_var( WLSM_M_Staff_Accountant::fetch_payments_query_count( $school_id, $session_id ) );
 
 	// Total Payment Received.

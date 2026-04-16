@@ -26,7 +26,7 @@ class WLSM_M_Invoice {
 		global $wpdb;
 
 		$last_invoice_count = $wpdb->get_var(
-			$wpdb->prepare( 'SELECT last_invoice_count FROM ' . WLSM_SCHOOLS . ' as s WHERE s.ID = %d', $school_id )
+			$wpdb->prepare( 'SELECT last_invoice_count FROM %i as s WHERE s.ID = %d', WLSM_SCHOOLS, $school_id )
 		);
 
 		$new_invoice_count = absint( $last_invoice_count ) + 1;
@@ -42,11 +42,11 @@ class WLSM_M_Invoice {
 
 		$buffer = ob_get_clean();
 		if ( ! empty( $buffer ) ) {
-			throw new Exception( $buffer );
+			throw new Exception( esc_html( $buffer ) );
 		}
 
 		if ( false === $success ) {
-			throw new Exception( $wpdb->last_error );
+			throw new Exception( esc_html( $wpdb->last_error ) );
 		}
 
 		return $invoice_number;
@@ -56,7 +56,7 @@ class WLSM_M_Invoice {
 		global $wpdb;
 
 		$last_payment_count = $wpdb->get_var(
-			$wpdb->prepare( 'SELECT last_payment_count FROM ' . WLSM_SCHOOLS . ' as s WHERE s.ID = %d', $school_id )
+			$wpdb->prepare( 'SELECT last_payment_count FROM %i as s WHERE s.ID = %d', WLSM_SCHOOLS, $school_id )
 		);
 
 		$new_payment_count = absint( $last_payment_count ) + 1;
@@ -72,11 +72,11 @@ class WLSM_M_Invoice {
 
 		$buffer = ob_get_clean();
 		if ( ! empty( $buffer ) ) {
-			throw new Exception( $buffer );
+			throw new Exception( esc_html( $buffer ) );
 		}
 
 		if ( false === $success ) {
-			throw new Exception( $wpdb->last_error );
+			throw new Exception( esc_html( $wpdb->last_error ) );
 		}
 
 		return $payment_number;

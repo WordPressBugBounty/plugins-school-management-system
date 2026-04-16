@@ -54,7 +54,7 @@ $currency = WLSM_Config::currency();
 					</li>
 					<li class="nav-item ml-1">
 						<a class="nav-link border border-primary" id="wlsm-school-registration-tab" data-toggle="tab" href="#wlsm-school-registration" role="tab" aria-controls="wlsm-school-registration" aria-selected="true">
-							<?php esc_html_e('Registration', 'school-management'); ?>
+							<?php esc_html_e('Registration', 'school-management-system'); ?>
 						</a>
 					</li>
 				</ul>

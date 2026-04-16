@@ -16,7 +16,8 @@ class WLSM_Session {
 		$page_url = WLSM_M_Session::get_page_url();
 	
 		// Create a prepared statement to prevent SQL injection.
-		$query = $wpdb->prepare( WLSM_M_Session::fetch_query() );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_query is built from safely prepared fragments.
+		$query = WLSM_M_Session::fetch_query();
 	
 		$query_filter = $query;
 	
@@ -32,7 +33,7 @@ class WLSM_Session {
 			$search_value = sanitize_text_field( esc_sql($_POST['search']['value']) );
 			if ( '' !== $search_value ) {
 				// Sanitize and validate user input.
-				$condition .= $wpdb->prepare( '(ss.label LIKE "%%%s%%")', $search_value );
+				$condition .= $wpdb->prepare( '(ss.label LIKE %s)', '%' . $wpdb->esc_like( $search_value ) . '%' );
 	
 				$start_date = DateTime::createFromFormat( WLSM_Config::date_format(), $search_value );
 	
@@ -47,7 +48,7 @@ class WLSM_Session {
 	
 				if ( $start_date && isset( $format_start_date ) ) {
 					$start_date = $start_date->format( $format_start_date );
-					$start_date = $wpdb->prepare( ' OR (ss.start_date LIKE "%%%s%%")', $start_date );
+					$start_date = $wpdb->prepare( ' OR (ss.start_date LIKE %s)', '%' . $wpdb->esc_like( $start_date ) . '%' );
 	
 					$condition .= $start_date;
 				}
@@ -65,7 +66,7 @@ class WLSM_Session {
 	
 				if ( $end_date && isset( $format_end_date ) ) {
 					$end_date = $end_date->format( $format_end_date );
-					$end_date = $wpdb->prepare( ' OR (ss.end_date LIKE "%%%s%%")', $end_date );
+					$end_date = $wpdb->prepare( ' OR (ss.end_date LIKE %s)', '%' . $wpdb->esc_like( $end_date ) . '%' );
 	
 					$condition .= $end_date;
 				}
@@ -98,16 +99,19 @@ class WLSM_Session {
 		$rows_query = WLSM_M_Session::fetch_query_count();
 	
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var( $rows_query );
 	
 		// Filtered rows count.
 		if ( $condition ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and $condition are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var( $rows_query . ' WHERE (' . $condition . ')' );
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 	
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results( $query_filter . $limit );
 	
 		$data = array();
@@ -201,9 +205,9 @@ class WLSM_Session {
 
 			// Checks if session already exists with this label, start_date and end_date.
 			if ( $session_id ) {
-				$session_exist = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) as count FROM ' . WLSM_SESSIONS . ' as ss WHERE ss.label = %s AND ss.start_date = "%s" AND ss.end_date = "%s" AND ss.ID != %d', $label, $start_date, $end_date, $session_id ) );
+				$session_exist = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) as count FROM %i as ss WHERE ss.label = %s AND ss.start_date = %s AND ss.end_date = %s AND ss.ID != %d', WLSM_SESSIONS, $label, $start_date, $end_date, $session_id ) );
 			} else {
-				$session_exist = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) as count FROM ' . WLSM_SESSIONS . ' as ss WHERE ss.label = %s', $label ) );
+				$session_exist = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) as count FROM %i as ss WHERE ss.label = %s', WLSM_SESSIONS, $label ) );
 			}
 
 			if ( $session_exist ) {
@@ -234,7 +238,7 @@ class WLSM_Session {
 
 				// Checks if update or insert.
 				if ( $session_id ) {
-					$data['updated_at'] = date( 'Y-m-d H:i:s' );
+					$data['updated_at'] = current_time( 'mysql' );
 
 					$success = $wpdb->update( WLSM_SESSIONS, $data, array( 'ID' => $session_id ) );
 					$message = esc_html__( 'Session updated successfully.', 'school-management-system' );

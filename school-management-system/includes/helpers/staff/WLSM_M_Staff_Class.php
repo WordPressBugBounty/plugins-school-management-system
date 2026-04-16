@@ -7,11 +7,12 @@ class WLSM_M_Staff_Class {
 	}
 
 	public static function fetch_classes_query( $school_id, $session_id ) {
-		$query = 'SELECT c.ID, c.label, COUNT(DISTINCT se.ID) as sections_count, COUNT(DISTINCT sr.ID) as students_count FROM ' . WLSM_CLASS_SCHOOL . ' as cs
-		JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-		LEFT OUTER JOIN ' . WLSM_SECTIONS . ' as se ON se.class_school_id = cs.ID
-		LEFT OUTER JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.section_id = se.ID AND sr.session_id = ' . absint( $session_id ) . '
-		WHERE cs.school_id = ' . absint( $school_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT c.ID, c.label, COUNT(DISTINCT se.ID) as sections_count, COUNT(DISTINCT sr.ID) as students_count FROM %i as cs
+		JOIN %i as c ON c.ID = cs.class_id
+		LEFT OUTER JOIN %i as se ON se.class_school_id = cs.ID
+		LEFT OUTER JOIN %i as sr ON sr.section_id = se.ID AND sr.session_id = %d
+		WHERE cs.school_id = %d', WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_SECTIONS, WLSM_STUDENT_RECORDS, $session_id, $school_id );
 		return $query;
 	}
 
@@ -21,28 +22,30 @@ class WLSM_M_Staff_Class {
 	}
 
 	public static function fetch_classes_query_count( $school_id ) {
-		$query = 'SELECT COUNT(DISTINCT c.ID) FROM ' . WLSM_CLASS_SCHOOL . ' as cs JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id WHERE cs.school_id =' . absint( $school_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT COUNT(DISTINCT c.ID) FROM %i as cs JOIN %i as c ON c.ID = cs.class_id WHERE cs.school_id = %d', WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id );
 		return $query;
 	}
 
 	public static function get_class( $school_id, $class_id ) {
 		global $wpdb;
-		$class = $wpdb->get_row( $wpdb->prepare( 'SELECT cs.ID, cs.default_section_id FROM ' . WLSM_CLASS_SCHOOL . ' as cs JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id WHERE cs.class_id = %d AND cs.school_id = %d', $class_id, $school_id ) );
+		$class = $wpdb->get_row( $wpdb->prepare( 'SELECT cs.ID, cs.default_section_id FROM %i as cs JOIN %i as c ON c.ID = cs.class_id WHERE cs.class_id = %d AND cs.school_id = %d', WLSM_CLASS_SCHOOL, WLSM_CLASSES, $class_id, $school_id ) );
 		return $class;
 	}
 
 	public static function fetch_class( $school_id, $class_id ) {
 		global $wpdb;
-		$class = $wpdb->get_row( $wpdb->prepare( 'SELECT cs.ID, c.ID as class_id, c.label, cs.default_section_id FROM ' . WLSM_CLASS_SCHOOL . ' as cs JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id WHERE cs.class_id = %d AND cs.school_id = %d', $class_id, $school_id ) );
+		$class = $wpdb->get_row( $wpdb->prepare( 'SELECT cs.ID, c.ID as class_id, c.label, cs.default_section_id FROM %i as cs JOIN %i as c ON c.ID = cs.class_id WHERE cs.class_id = %d AND cs.school_id = %d', WLSM_CLASS_SCHOOL, WLSM_CLASSES, $class_id, $school_id ) );
 		return $class;
 	}
 
 	public static function fetch_sections_query( $school_id, $session_id, $class_school_id ) {
-		$query = 'SELECT se.ID, se.label, cs.class_id as class_id, cs.default_section_id, COUNT(sr.ID) as students_count FROM ' . WLSM_SECTIONS . ' as se
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-		JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = cs.school_id
-		LEFT OUTER JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.section_id = se.ID AND sr.session_id = ' . absint( $session_id ) . '
-		WHERE cs.school_id = ' . absint( $school_id ) . ' AND se.class_school_id = ' . absint( $class_school_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT se.ID, se.label, cs.class_id as class_id, cs.default_section_id, COUNT(sr.ID) as students_count FROM %i as se
+		JOIN %i as cs ON cs.ID = se.class_school_id
+		JOIN %i as s ON s.ID = cs.school_id
+		LEFT OUTER JOIN %i as sr ON sr.section_id = se.ID AND sr.session_id = %d
+		WHERE cs.school_id = %d AND se.class_school_id = %d', WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_SCHOOLS, WLSM_STUDENT_RECORDS, $session_id, $school_id, $class_school_id );
 		return $query;
 	}
 
@@ -52,57 +55,50 @@ class WLSM_M_Staff_Class {
 	}
 
 	public static function fetch_sections_query_count( $school_id, $class_school_id ) {
-		$query = 'SELECT COUNT(DISTINCT se.ID) FROM ' . WLSM_SECTIONS . ' as se JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = cs.school_id WHERE cs.school_id = ' . absint( $school_id ) . ' AND se.class_school_id = ' . absint( $class_school_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT COUNT(DISTINCT se.ID) FROM %i as se JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as s ON s.ID = cs.school_id WHERE cs.school_id = %d AND se.class_school_id = %d', WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_SCHOOLS, $school_id, $class_school_id );
 		return $query;
 	}
 
 	public static function get_section( $school_id, $id, $class_school_id ) {
 		global $wpdb;
-		$section = $wpdb->get_row( $wpdb->prepare( 'SELECT se.ID FROM ' . WLSM_SECTIONS . ' as se JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.school_id = %d AND se.ID = %d AND se.class_school_id = %d', $school_id, $id, $class_school_id ) );
+		$section = $wpdb->get_row( $wpdb->prepare( 'SELECT se.ID FROM %i as se JOIN %i as cs ON cs.school_id = %d AND se.ID = %d AND se.class_school_id = %d', WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $id, $class_school_id ) );
 		return $section;
 	}
 
 	public static function fetch_section( $school_id, $id, $class_school_id ) {
 		global $wpdb;
-		$section = $wpdb->get_row( $wpdb->prepare( 'SELECT se.ID, se.label FROM ' . WLSM_SECTIONS . ' as se JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.school_id = %d AND se.ID = %d AND se.class_school_id = %d', $school_id, $id, $class_school_id ) );
+		$section = $wpdb->get_row( $wpdb->prepare( 'SELECT se.ID, se.label FROM %i as se JOIN %i as cs ON cs.school_id = %d AND se.ID = %d AND se.class_school_id = %d', WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $id, $class_school_id ) );
 		return $section;
 	}
 
 	public static function fetch_classes( $school_id ) {
 		global $wpdb;
-		$classes = $wpdb->get_results( $wpdb->prepare( 'SELECT DISTINCT(c.ID), c.label FROM ' . WLSM_CLASS_SCHOOL . ' as cs JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id WHERE cs.school_id = %d ORDER BY c.ID ASC', $school_id ) );
+		$classes = $wpdb->get_results( $wpdb->prepare( 'SELECT DISTINCT(c.ID), c.label FROM %i as cs JOIN %i as c ON c.ID = cs.class_id WHERE cs.school_id = %d ORDER BY c.ID ASC', WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id ) );
 		return $classes;
 	}
 
 	public static function fetch_classes_ids( $school_id ) {
 		global $wpdb;
-		$classes_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT DISTINCT(c.ID) FROM ' . WLSM_CLASS_SCHOOL . ' as cs JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id WHERE cs.school_id = %d ORDER BY c.ID ASC', $school_id ) );
+		$classes_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT DISTINCT(c.ID) FROM %i as cs JOIN %i as c ON c.ID = cs.class_id WHERE cs.school_id = %d ORDER BY c.ID ASC', WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id ) );
 		return $classes_ids;
 	}
 
 	public static function fetch_sections( $class_school_id ) {
 		global $wpdb;
-		$sections = $wpdb->get_results( $wpdb->prepare( 'SELECT se.ID, se.label FROM ' . WLSM_SECTIONS . ' as se WHERE se.class_school_id = %d', $class_school_id ) );
+		$sections = $wpdb->get_results( $wpdb->prepare( 'SELECT se.ID, se.label FROM %i as se WHERE se.class_school_id = %d', WLSM_SECTIONS, $class_school_id ) );
 		return $sections;
 	}
 
 	public static function get_class_students( $school_id, $session_id, $class_id ) {
 		global $wpdb;
-		$students = $wpdb->get_results( $wpdb->prepare( 'SELECT sr.ID, sr.name, sr.enrollment_number, sr.roll_number, sr.phone, se.label as section_label FROM ' . WLSM_STUDENT_RECORDS . ' as sr
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND cs.class_id = %d AND sr.is_active = 1 GROUP BY sr.ID ORDER BY sr.roll_number ASC, sr.name ASC', $school_id, $session_id, $class_id ), OBJECT_K );
+		$students = $wpdb->get_results( $wpdb->prepare( 'SELECT sr.ID, sr.name, sr.enrollment_number, sr.roll_number, sr.phone, se.label as section_label FROM %i as sr JOIN %i as se ON se.ID = sr.section_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND cs.class_id = %d AND sr.is_active = 1 GROUP BY sr.ID ORDER BY sr.roll_number ASC, sr.name ASC', WLSM_STUDENT_RECORDS, WLSM_SECTIONS, WLSM_SESSIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, $class_id ), OBJECT_K );
 		return $students;
 	}
 
 	public static function get_section_students( $school_id, $session_id, $section_id ) {
 		global $wpdb;
-		$students = $wpdb->get_results( $wpdb->prepare( 'SELECT sr.ID, sr.name, sr.enrollment_number, sr.roll_number, sr.phone, se.label as section_label FROM ' . WLSM_STUDENT_RECORDS . ' as sr
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND se.ID = %d AND sr.is_active = 1 GROUP BY sr.ID ORDER BY sr.roll_number ASC, sr.name ASC', $school_id, $session_id, $section_id ), OBJECT_K );
+		$students = $wpdb->get_results( $wpdb->prepare( 'SELECT sr.ID, sr.name, sr.enrollment_number, sr.roll_number, sr.phone, se.label as section_label FROM %i as sr JOIN %i as se ON se.ID = sr.section_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND se.ID = %d AND sr.is_active = 1 GROUP BY sr.ID ORDER BY sr.roll_number ASC, sr.name ASC', WLSM_STUDENT_RECORDS, WLSM_SECTIONS, WLSM_SESSIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, $section_id ), OBJECT_K );
 		return $students;
 	}
 
@@ -127,24 +123,25 @@ class WLSM_M_Staff_Class {
 
 	public static function get_notice( $school_id, $id ) {
 		global $wpdb;
-		$notice = $wpdb->get_row( $wpdb->prepare( 'SELECT n.ID, n.attachment FROM ' . WLSM_NOTICES . ' as n WHERE n.school_id = %d AND n.ID = %d', $school_id, $id ) );
+		$notice = $wpdb->get_row( $wpdb->prepare( 'SELECT n.ID, n.attachment FROM %i as n WHERE n.school_id = %d AND n.ID = %d', WLSM_NOTICES, $school_id, $id ) );
 		return $notice;
 	}
 
 	public static function fetch_notice( $school_id, $id ) {
 		global $wpdb;
-		$notice = $wpdb->get_row( $wpdb->prepare( 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active FROM ' . WLSM_NOTICES . ' as n WHERE n.school_id = %d AND n.ID = %d', $school_id, $id ) );
+		$notice = $wpdb->get_row( $wpdb->prepare( 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active FROM %i as n WHERE n.school_id = %d AND n.ID = %d', WLSM_NOTICES, $school_id, $id ) );
 		return $notice;
 	}
 
-	public static function get_school_notices( $school_id, $limit = '' ) {
+	public static function get_school_notices( $school_id, $limit = 0 ) {
 		global $wpdb;
-		$sql = 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active, n.created_at FROM ' . WLSM_NOTICES . ' as n WHERE n.school_id = %d AND n.is_active = 1 GROUP BY n.ID ORDER BY n.ID DESC';
-		if ( $limit ) {
-			$sql .= ( ' LIMIT ' . absint( $limit ) );
+		$limit = absint( $limit );
+
+		if ( $limit > 0 ) {
+			return $wpdb->get_results( $wpdb->prepare( 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active, n.created_at FROM %i as n WHERE n.school_id = %d AND n.is_active = 1 GROUP BY n.ID ORDER BY n.ID DESC LIMIT %d', WLSM_NOTICES, $school_id, $limit ) );
 		}
-		$notices = $wpdb->get_results( $wpdb->prepare( $sql, $school_id ) );
-		return $notices;
+
+		return $wpdb->get_results( $wpdb->prepare( 'SELECT n.ID, n.title, n.attachment, n.url, n.link_to, n.is_active, n.created_at FROM %i as n WHERE n.school_id = %d AND n.is_active = 1 GROUP BY n.ID ORDER BY n.ID DESC', WLSM_NOTICES, $school_id ) );
 	}
 
 	public static function get_subjects_page_url() {
@@ -152,11 +149,12 @@ class WLSM_M_Staff_Class {
 	}
 
 	public static function fetch_subject_query( $school_id ) {
-		$query = 'SELECT sj.ID, sj.label as subject_name, sj.code, sj.type, c.label as class_label, COUNT(DISTINCT asj.ID) as admins_count FROM ' . WLSM_SUBJECTS . ' as sj
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-		JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-		LEFT OUTER JOIN ' . WLSM_ADMIN_SUBJECT . ' as asj ON asj.subject_id = sj.ID
-		WHERE cs.school_id = ' . absint( $school_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT sj.ID, sj.label as subject_name, sj.code, sj.type, c.label as class_label, COUNT(DISTINCT asj.ID) as admins_count FROM %i as sj
+		JOIN %i as cs ON cs.ID = sj.class_school_id
+		JOIN %i as c ON c.ID = cs.class_id
+		LEFT OUTER JOIN %i as asj ON asj.subject_id = sj.ID
+		WHERE cs.school_id = %d', WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_ADMIN_SUBJECT, $school_id );
 		return $query;
 	}
 
@@ -166,87 +164,71 @@ class WLSM_M_Staff_Class {
 	}
 
 	public static function fetch_subject_query_count( $school_id ) {
-		$query = 'SELECT COUNT(DISTINCT sj.ID) FROM ' . WLSM_SUBJECTS . ' as sj
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-		JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-		WHERE cs.school_id = ' . absint( $school_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT COUNT(DISTINCT sj.ID) FROM %i as sj
+		JOIN %i as cs ON cs.ID = sj.class_school_id
+		JOIN %i as c ON c.ID = cs.class_id
+		WHERE cs.school_id = %d', WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id );
 		return $query;
 	}
 
 	public static function get_subject( $school_id, $id ) {
 		global $wpdb;
-		$subject = $wpdb->get_row( $wpdb->prepare( 'SELECT sj.ID FROM ' . WLSM_SUBJECTS . ' as sj
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-			WHERE cs.school_id = %d AND sj.ID = %d', $school_id, $id ) );
+		$subject = $wpdb->get_row( $wpdb->prepare( 'SELECT sj.ID FROM %i as sj JOIN %i as cs ON cs.ID = sj.class_school_id WHERE cs.school_id = %d AND sj.ID = %d', WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, $school_id, $id ) );
 		return $subject;
 	}
 
 	public static function fetch_subject( $school_id, $id ) {
 		global $wpdb;
-		$subject = $wpdb->get_row( $wpdb->prepare( 'SELECT sj.ID, sj.label as subject_name, sj.code, sj.type, cs.class_id, c.label as class_label FROM ' . WLSM_SUBJECTS . ' as sj
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-			JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-			WHERE cs.school_id = %d AND sj.ID = %d', $school_id, $id ) );
+		$subject = $wpdb->get_row( $wpdb->prepare( 'SELECT sj.ID, sj.label as subject_name, sj.code, sj.type, cs.class_id, c.label as class_label FROM %i as sj JOIN %i as cs ON cs.ID = sj.class_school_id JOIN %i as c ON c.ID = cs.class_id WHERE cs.school_id = %d AND sj.ID = %d', WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id, $id ) );
 		return $subject;
 	}
 
 	public static function fetch_subject_admins_query( $school_id, $subject_id ) {
-		$query = 'SELECT a.ID, a.name, a.phone, a.is_active, u.user_login as username FROM ' . WLSM_ADMIN_SUBJECT . ' as asj
-		JOIN ' . WLSM_SUBJECTS . ' as sj ON sj.ID = asj.subject_id
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-		JOIN ' . WLSM_ADMINS . ' as a ON a.ID = asj.admin_id
-		JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-		LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sf.user_id
-		WHERE sf.school_id = ' . absint( $school_id ) . ' AND sj.ID = ' . absint( $subject_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT a.ID, a.name, a.phone, a.is_active, u.user_login as username FROM %i as asj
+		JOIN %i as sj ON sj.ID = asj.subject_id
+		JOIN %i as cs ON cs.ID = sj.class_school_id
+		JOIN %i as a ON a.ID = asj.admin_id
+		JOIN %i as sf ON sf.ID = a.staff_id
+		LEFT OUTER JOIN %i as u ON u.ID = sf.user_id
+		WHERE sf.school_id = %d AND sj.ID = %d', WLSM_ADMIN_SUBJECT, WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, WLSM_ADMINS, WLSM_STAFF, WLSM_USERS, $school_id, $subject_id );
 		return $query;
 	}
 
 	public static function fetch_subject_admins_query_count( $school_id, $subject_id ) {
-		$query = 'SELECT COUNT(DISTINCT a.ID) FROM ' . WLSM_ADMIN_SUBJECT . ' as asj
-		JOIN ' . WLSM_SUBJECTS . ' as sj ON sj.ID = asj.subject_id
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-		JOIN ' . WLSM_ADMINS . ' as a ON a.ID = asj.admin_id
-		JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-		LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sf.user_id
-		WHERE sf.school_id = ' . absint( $school_id ) . ' AND sj.ID = ' . absint( $subject_id );
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM %i as asj
+		JOIN %i as sj ON sj.ID = asj.subject_id
+		JOIN %i as cs ON cs.ID = sj.class_school_id
+		JOIN %i as a ON a.ID = asj.admin_id
+		JOIN %i as sf ON sf.ID = a.staff_id
+		LEFT OUTER JOIN %i as u ON u.ID = sf.user_id
+		WHERE sf.school_id = %d AND sj.ID = %d', WLSM_ADMIN_SUBJECT, WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, WLSM_ADMINS, WLSM_STAFF, WLSM_USERS, $school_id, $subject_id );
 		return $query;
 	}
 
 	public static function get_admin_subject( $school_id, $subject_id, $admin_id ) {
 		global $wpdb;
-		$admin = $wpdb->get_row( $wpdb->prepare( 'SELECT asj.ID FROM ' . WLSM_ADMIN_SUBJECT . ' as asj
-		JOIN ' . WLSM_SUBJECTS . ' as sj ON sj.ID = asj.subject_id
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = sj.class_school_id
-		JOIN ' . WLSM_ADMINS . ' as a ON a.ID = asj.admin_id
-		JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-		WHERE sf.school_id = %d AND sj.ID = %d AND a.ID = %d', $school_id, $subject_id, $admin_id ) );
+		$admin = $wpdb->get_row( $wpdb->prepare( 'SELECT asj.ID FROM %i as asj JOIN %i as sj ON sj.ID = asj.subject_id JOIN %i as cs ON cs.ID = sj.class_school_id JOIN %i as a ON a.ID = asj.admin_id JOIN %i as sf ON sf.ID = a.staff_id WHERE sf.school_id = %d AND sj.ID = %d AND a.ID = %d', WLSM_ADMIN_SUBJECT, WLSM_SUBJECTS, WLSM_CLASS_SCHOOL, WLSM_ADMINS, WLSM_STAFF, $school_id, $subject_id, $admin_id ) );
 		return $admin;
 	}
 
 	public static function get_keyword_active_admins( $school_id, $keyword ) {
 		global $wpdb;
-		$admins = $wpdb->get_results( $wpdb->prepare( 'SELECT a.ID, a.name as label, a.phone, u.user_login as username FROM ' . WLSM_ADMINS . ' as a
-			JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-			LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sf.user_id
-			WHERE sf.school_id = %d AND a.is_active = 1 AND a.name LIKE "%s"', $school_id, "%%".$wpdb->esc_like( $keyword )."%%" ) );
+		$admins = $wpdb->get_results( $wpdb->prepare( 'SELECT a.ID, a.name as label, a.phone, u.user_login as username FROM %i as a JOIN %i as sf ON sf.ID = a.staff_id LEFT OUTER JOIN %i as u ON u.ID = sf.user_id WHERE sf.school_id = %d AND a.is_active = 1 AND a.name LIKE %s', WLSM_ADMINS, WLSM_STAFF, WLSM_USERS, $school_id, '%' . $wpdb->esc_like( $keyword ) . '%' ) );
 		return $admins;
 	}
 
 	public static function get_active_admins_ids_in_school( $school_id, $admin_ids ) {
 		global $wpdb;
 
-		$values        = array( $school_id );
-		$place_holders = array();
+		$place_holders = array_fill( 0, count( $admin_ids ), '%d' );
+		$ids_format    = implode( ', ', $place_holders );
+		$prepare       = array_merge( array( WLSM_ADMINS, WLSM_STAFF, WLSM_USERS, $school_id ), $admin_ids );
 
-		foreach ( $admin_ids as $admin_id ) {
-			array_push( $values, $admin_id );
-			array_push( $place_holders, '%d' );
-		}
-
-		$admin_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT a.ID FROM ' . WLSM_ADMINS . ' as a
-			JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-			LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sf.user_id
-			WHERE sf.school_id = %d AND a.is_active = 1 AND a.ID IN(' . implode( ', ', $place_holders ) . ')', $values ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $ids_format is built internally and safely.
+		$admin_ids = $wpdb->get_col( $wpdb->prepare( 'SELECT a.ID FROM %i as a JOIN %i as sf ON sf.ID = a.staff_id LEFT OUTER JOIN %i as u ON u.ID = sf.user_id WHERE sf.school_id = %d AND a.is_active = 1 AND a.ID IN(' . $ids_format . ')', $prepare ) );
 
 		return $admin_ids;
 	}
@@ -254,19 +236,12 @@ class WLSM_M_Staff_Class {
 	public static function fetch_active_students_of_classes( $school_id, $session_id, $class_ids ) {
 		global $wpdb;
 
-		$values        = array( $school_id, $session_id );
-		$place_holders = array();
+		$place_holders = array_fill( 0, count( $class_ids ), '%d' );
+		$ids_format    = implode( ', ', $place_holders );
+		$prepare       = array_merge( array( WLSM_STUDENT_RECORDS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id, $session_id ), $class_ids );
 
-		foreach ( $class_ids as $class_id ) {
-			array_push( $values, $class_id );
-			array_push( $place_holders, '%d' );
-		}
-
-		$students = $wpdb->get_results( $wpdb->prepare( 'SELECT sr.ID, sr.enrollment_number, sr.name, sr.phone, sr.email, c.label as class_label, se.label as section_label FROM ' . WLSM_STUDENT_RECORDS . ' as sr
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-			WHERE cs.school_id = %d AND sr.session_id = %d AND sr.is_active = 1 AND c.ID IN(' . implode( ', ', $place_holders ) . ') AND GROUP BY sr.ID ORDER BY sr.name', $values ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $ids_format is built internally and safely.
+		$students = $wpdb->get_results( $wpdb->prepare( 'SELECT sr.ID, sr.enrollment_number, sr.name, sr.phone, sr.email, c.label as class_label, se.label as section_label FROM %i as sr JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id WHERE cs.school_id = %d AND sr.session_id = %d AND sr.is_active = 1 AND c.ID IN(' . $ids_format . ') GROUP BY sr.ID ORDER BY sr.name', $prepare ) );
 		return $students;
 	}
 

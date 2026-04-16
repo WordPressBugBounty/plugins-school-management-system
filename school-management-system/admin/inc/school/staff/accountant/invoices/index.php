@@ -16,14 +16,7 @@ $total_payment_received = WLSM_M_Staff_Accountant::get_total_payments_received( 
 
 // Invoices pending amount.
 $invoices_pending_amount = $wpdb->get_col(
-	$wpdb->prepare( 'SELECT ((i.amount - i.discount) - COALESCE(SUM(p.amount), 0)) as due FROM ' . WLSM_INVOICES . ' as i 
-		JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id 
-		JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-		JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-		JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-		LEFT OUTER JOIN ' . WLSM_PAYMENTS . ' as p ON p.invoice_id = i.ID 
-		WHERE cs.school_id = %d AND ss.ID = %d AND (i.status = "%s" OR i.status = "%s") GROUP BY i.ID', $school_id, $session_id, WLSM_M_Invoice::get_unpaid_key(), WLSM_M_Invoice::get_partially_paid_key() )
+	$wpdb->prepare( 'SELECT ((i.amount - i.discount) - COALESCE(SUM(p.amount), 0)) as due FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id LEFT OUTER JOIN %i as p ON p.invoice_id = i.ID WHERE cs.school_id = %d AND ss.ID = %d AND (i.status = %s OR i.status = %s) GROUP BY i.ID', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_PAYMENTS, $school_id, $session_id, WLSM_M_Invoice::get_unpaid_key(), WLSM_M_Invoice::get_partially_paid_key() )
 );
 
 $invoices_pending_amount = array_sum( $invoices_pending_amount );

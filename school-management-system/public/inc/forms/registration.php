@@ -20,7 +20,7 @@ $school_registration_id_number         = '';
 
 $school = WLSM_M_School::get_active_school( $school_id );
 if ( ! $school ) {
-	$invalid_message = esc_html__( 'School not found.', 'school-management' );
+	$invalid_message = esc_html__( 'School not found.', 'school-management-system' );
 	return require_once WLSM_PLUGIN_DIR_PATH . 'public/inc/partials/invalid.php';
 }
 
@@ -65,7 +65,7 @@ $nonce_action = 'wlsm-submit-registration';
 			?>
 			<div class="wlsm-header-title wlsm-font-bold wlsm-mb-3">
 				<span class="wlsm-border-bottom wlsm-pb-1">
-					<?php esc_html_e( 'Online Registration', 'school-management' ); ?>
+					<?php esc_html_e( 'Online Registration', 'school-management-system' ); ?>
 				</span>
 			</div>
 			<?php
@@ -88,7 +88,7 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row">
 					<div class="wlsm-col-12">
 						<div class="wlsm-form-sub-heading wlsm-font-bold">
-							<?php esc_html_e( 'Personal Detail', 'school-management' ); ?>
+							<?php esc_html_e( 'Personal Detail', 'school-management-system' ); ?>
 						</div>
 					</div>
 				</div>
@@ -96,14 +96,14 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row">
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_name" class="wlsm-font-bold">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Student Name', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Student Name', 'school-management-system' ); ?>:
 						</label>
-						<input type="text" name="name" class="wlsm-form-control" id="wlsm_name" placeholder="<?php esc_attr_e( 'Enter student name', 'school-management' ); ?>" value="">
+						<input type="text" name="name" class="wlsm-form-control" id="wlsm_name" placeholder="<?php esc_attr_e( 'Enter student name', 'school-management-system' ); ?>" value="">
 					</div>
 
 					<div class="wlsm-form-group wlsm-col-4">
 						<label class="wlsm-font-bold wlsm-d-block">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Gender', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Gender', 'school-management-system' ); ?>:
 						</label>
 						<?php
 						foreach ( $gender_list as $key => $value ) {
@@ -122,9 +122,9 @@ $nonce_action = 'wlsm-submit-registration';
 					<?php if ( $school_registration_dob or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_dob">
 							<label for="wlsm_date_of_birth" class="wlsm-font-bold">
-								<?php esc_html_e( 'Date of Birth', 'school-management' ); ?>:
+								<?php esc_html_e( 'Date of Birth', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="dob" class="wlsm-form-control" id="wlsm_date_of_birth" placeholder="<?php esc_attr_e( 'Enter date of birth', 'school-management' ); ?>" value="">
+							<input type="text" name="dob" class="wlsm-form-control" id="wlsm_date_of_birth" placeholder="<?php esc_attr_e( 'Enter date of birth', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 
@@ -135,28 +135,28 @@ $nonce_action = 'wlsm-submit-registration';
 					<?php if ( $school_registration_religion or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_religion">
 							<label for="wlsm_religion" class="wlsm-font-bold">
-								<?php esc_html_e( 'Religion', 'school-management' ); ?>:
+								<?php esc_html_e( 'Religion', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="religion" class="wlsm-form-control" id="wlsm_religion" placeholder="<?php esc_attr_e( 'Enter religion', 'school-management' ); ?>" value="">
+							<input type="text" name="religion" class="wlsm-form-control" id="wlsm_religion" placeholder="<?php esc_attr_e( 'Enter religion', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 
 					<?php if ( $school_registration_caste or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_caste">
 							<label for="wlsm_caste" class="wlsm-font-bold">
-								<?php esc_html_e( 'Caste', 'school-management' ); ?>:
+								<?php esc_html_e( 'Caste', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="caste" class="wlsm-form-control" id="wlsm_caste" placeholder="<?php esc_attr_e( 'Enter caste', 'school-management' ); ?>" value="">
+							<input type="text" name="caste" class="wlsm-form-control" id="wlsm_caste" placeholder="<?php esc_attr_e( 'Enter caste', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 
 					<?php if ( $school_registration_blood_group or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_blood_group">
 							<label for="wlsm_blood_group" class="wlsm-font-bold">
-								<?php esc_html_e( 'Blood Group', 'school-management' ); ?>:
+								<?php esc_html_e( 'Blood Group', 'school-management-system' ); ?>:
 							</label>
 							<select name="blood_group" class="wlsm-form-control selectpicker" id="wlsm_blood_group" data-live-search="true">
-								<option value=""><?php esc_html_e( 'Select Blood Group', 'school-management' ); ?></option>
+								<option value=""><?php esc_html_e( 'Select Blood Group', 'school-management-system' ); ?></option>
 								<?php foreach ( $blood_group_list as $key => $value ) { ?>
 									<option value="<?php echo esc_attr( $key ); ?>">
 										<?php echo esc_html( $value ); ?>
@@ -170,25 +170,25 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row">
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_address" class="wlsm-font-bold">
-							<?php esc_html_e( 'Address', 'school-management' ); ?>:
+							<?php esc_html_e( 'Address', 'school-management-system' ); ?>:
 						</label>
-						<textarea name="address" class="wlsm-form-control" id="wlsm_address" cols="30" rows="3" placeholder="<?php esc_attr_e( 'Enter student address', 'school-management' ); ?>"></textarea>
+						<textarea name="address" class="wlsm-form-control" id="wlsm_address" cols="30" rows="3" placeholder="<?php esc_attr_e( 'Enter student address', 'school-management-system' ); ?>"></textarea>
 					</div>
 
 					<?php if ( $school_registration_phone or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_phone">
 							<label for="wlsm_phone" class="wlsm-font-bold">
-								<?php esc_html_e( 'Phone', 'school-management' ); ?>:
+								<?php esc_html_e( 'Phone', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="phone" class="wlsm-form-control" id="wlsm_phone" placeholder="<?php esc_attr_e( 'Enter student phone number', 'school-management' ); ?>" value="">
+							<input type="text" name="phone" class="wlsm-form-control" id="wlsm_phone" placeholder="<?php esc_attr_e( 'Enter student phone number', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_email" class="wlsm-font-bold">
-							<?php esc_html_e( 'Email', 'school-management' ); ?>:
+							<?php esc_html_e( 'Email', 'school-management-system' ); ?>:
 						</label>
-						<input type="email" name="email" class="wlsm-form-control" id="wlsm_email" placeholder="<?php esc_attr_e( 'Enter student email address', 'school-management' ); ?>" value="">
+						<input type="email" name="email" class="wlsm-form-control" id="wlsm_email" placeholder="<?php esc_attr_e( 'Enter student email address', 'school-management-system' ); ?>" value="">
 					</div>
 				</div>
 
@@ -196,27 +196,27 @@ $nonce_action = 'wlsm-submit-registration';
 					<?php if ( $school_registration_phone or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_city">
 							<label for="wlsm_city" class="wlsm-font-bold">
-								<?php esc_html_e( 'City', 'school-management' ); ?>:
+								<?php esc_html_e( 'City', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="city" class="wlsm-form-control" id="wlsm_city" placeholder="<?php esc_attr_e( 'Enter city', 'school-management' ); ?>" value="">
+							<input type="text" name="city" class="wlsm-form-control" id="wlsm_city" placeholder="<?php esc_attr_e( 'Enter city', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 
 					<?php if ( $school_registration_state or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_state">
 							<label for="wlsm_state" class="wlsm-font-bold">
-								<?php esc_html_e( 'State', 'school-management' ); ?>:
+								<?php esc_html_e( 'State', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="state" class="wlsm-form-control" id="wlsm_state" placeholder="<?php esc_attr_e( 'Enter state', 'school-management' ); ?>" value="">
+							<input type="text" name="state" class="wlsm-form-control" id="wlsm_state" placeholder="<?php esc_attr_e( 'Enter state', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 
 					<?php if ( $school_registration_country or empty( $school_id ) ) : ?>
 						<div class="wlsm-form-group wlsm-col-4" id="registration_country">
 							<label for="wlsm_country" class="wlsm-font-bold">
-								<?php esc_html_e( 'Country', 'school-management' ); ?>:
+								<?php esc_html_e( 'Country', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="country" class="wlsm-form-control" id="wlsm_country" placeholder="<?php esc_attr_e( 'Enter country', 'school-management' ); ?>" value="">
+							<input type="text" name="country" class="wlsm-form-control" id="wlsm_country" placeholder="<?php esc_attr_e( 'Enter country', 'school-management-system' ); ?>" value="">
 						</div>
 					<?php endif ?>
 				</div>
@@ -224,15 +224,15 @@ $nonce_action = 'wlsm-submit-registration';
 					<div class="wlsm-row" id="registration_id">
 						<div class="wlsm-form-group wlsm-col-4">
 							<label for="wlsm_id_number" class="wlsm-font-bold">
-								<?php esc_html_e( 'ID Number', 'school-management' ); ?>:
+								<?php esc_html_e( 'ID Number', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="id_number" class="wlsm-form-control" id="wlsm_id_number" placeholder="<?php esc_attr_e( 'Enter ID number', 'school-management' ); ?>" value="">
+							<input type="text" name="id_number" class="wlsm-form-control" id="wlsm_id_number" placeholder="<?php esc_attr_e( 'Enter ID number', 'school-management-system' ); ?>" value="">
 						</div>
 						<div class="wlsm-form-group wlsm-col-4">
 							<div class="wlsm-id-proof-box wlsm-mt-2">
 								<div class="wlsm-id-proof-section">
 									<label for="wlsm_id_proof" class="wlsm-font-bold">
-										<?php esc_html_e( 'Upload ID Proof', 'school-management' ); ?>:
+										<?php esc_html_e( 'Upload ID Proof', 'school-management-system' ); ?>:
 									</label>
 									<div class="custom-file mb-3">
 										<input type="file" class="custom-file-input" id="wlsm_id_proof" name="id_proof">
@@ -250,7 +250,7 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row">
 					<div class="wlsm-col-12">
 						<div class="wlsm-form-sub-heading wlsm-font-bold">
-							<?php esc_html_e( 'Admission Detail', 'school-management' ); ?>
+							<?php esc_html_e( 'Admission Detail', 'school-management-system' ); ?>
 						</div>
 					</div>
 				</div>
@@ -258,10 +258,10 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row">
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_school_class" class="wlsm-font-bold">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Class', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Class', 'school-management-system' ); ?>:
 						</label>
 						<select name="class_id" class="wlsm-form-control wlsm_school_class wlsm_get_class_fees" data-nonce="<?php echo esc_attr( wp_create_nonce( 'get-class-sections' ) ); ?>" id="">
-							<option value=""><?php esc_html_e( 'Select Class', 'school-management' ); ?></option>
+							<option value=""><?php esc_html_e( 'Select Class', 'school-management-system' ); ?></option>
 							<?php
 							if ( isset( $classes ) ) {
 								foreach ( $classes as $class ) {
@@ -279,10 +279,10 @@ $nonce_action = 'wlsm-submit-registration';
 
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_section" class="wlsm-font-bold">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Section', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Section', 'school-management-system' ); ?>:
 						</label>
 						<select name="section_id" class="wlsm-form-control" id="wlsm_section">
-							<option value=""><?php esc_html_e( 'Select Section', 'school-management' ); ?></option>
+							<option value=""><?php esc_html_e( 'Select Section', 'school-management-system' ); ?></option>
 						</select>
 					</div>
 
@@ -290,7 +290,7 @@ $nonce_action = 'wlsm-submit-registration';
 						<div class="wlsm-photo-box wlsm-mt-2">
 							<div class="wlsm-photo-section">
 								<label for="wlsm_photo" class="wlsm-font-bold">
-									<?php esc_html_e( 'Upload Photo', 'school-management' ); ?>:
+									<?php esc_html_e( 'Upload Photo', 'school-management-system' ); ?>:
 								</label>
 								<div class="custom-file mb-3">
 									<input type="file" class="custom-file-input" id="wlsm_photo" name="photo">
@@ -307,7 +307,7 @@ $nonce_action = 'wlsm-submit-registration';
 					<div class="wlsm-row">
 						<div class="wlsm-col-12">
 							<div class="wlsm-form-sub-heading wlsm-font-bold">
-								<?php esc_html_e( 'Parent Detail', 'school-management' ); ?>
+								<?php esc_html_e( 'Parent Detail', 'school-management-system' ); ?>
 							</div>
 						</div>
 					</div>
@@ -315,22 +315,22 @@ $nonce_action = 'wlsm-submit-registration';
 					<div class="wlsm-row">
 						<div class="wlsm-form-group wlsm-col-4">
 							<label for="wlsm_father_name" class="wlsm-font-bold">
-								<?php esc_html_e( 'Father\'s Name', 'school-management' ); ?>:
+								<?php esc_html_e( 'Father\'s Name', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="father_name" class="wlsm-form-control" id="wlsm_father_name" placeholder="<?php esc_attr_e( 'Enter father name', 'school-management' ); ?>" value="">
+							<input type="text" name="father_name" class="wlsm-form-control" id="wlsm_father_name" placeholder="<?php esc_attr_e( 'Enter father name', 'school-management-system' ); ?>" value="">
 						</div>
 						<div class="wlsm-form-group wlsm-col-4">
 							<label for="wlsm_father_phone" class="wlsm-font-bold">
-								<?php esc_html_e( 'Father\'s Phone', 'school-management' ); ?>:
+								<?php esc_html_e( 'Father\'s Phone', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="father_phone" class="wlsm-form-control" id="wlsm_father_phone" placeholder="<?php esc_attr_e( 'Enter father phone number', 'school-management' ); ?>" value="">
+							<input type="text" name="father_phone" class="wlsm-form-control" id="wlsm_father_phone" placeholder="<?php esc_attr_e( 'Enter father phone number', 'school-management-system' ); ?>" value="">
 						</div>
 						<?php if ( $school_registration_parent_occupation or empty( $school_id ) ) : ?>
 							<div class="wlsm-form-group wlsm-col-4">
 								<label for="wlsm_father_occupation" class="wlsm-font-bold">
-									<?php esc_html_e( 'Father\'s Occupation', 'school-management' ); ?>:
+									<?php esc_html_e( 'Father\'s Occupation', 'school-management-system' ); ?>:
 								</label>
-								<input type="text" name="father_occupation" class="wlsm-form-control" id="wlsm_father_occupation" placeholder="<?php esc_attr_e( 'Enter father occupation', 'school-management' ); ?>" value="">
+								<input type="text" name="father_occupation" class="wlsm-form-control" id="wlsm_father_occupation" placeholder="<?php esc_attr_e( 'Enter father occupation', 'school-management-system' ); ?>" value="">
 							</div>
 						<?php endif ?>
 					</div>
@@ -338,22 +338,22 @@ $nonce_action = 'wlsm-submit-registration';
 					<div class="wlsm-row">
 						<div class="wlsm-form-group wlsm-col-4">
 							<label for="wlsm_mother_name" class="wlsm-font-bold">
-								<?php esc_html_e( 'Mother\'s Name', 'school-management' ); ?>:
+								<?php esc_html_e( 'Mother\'s Name', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="mother_name" class="wlsm-form-control" id="wlsm_mother_name" placeholder="<?php esc_attr_e( 'Enter mother name', 'school-management' ); ?>" value="">
+							<input type="text" name="mother_name" class="wlsm-form-control" id="wlsm_mother_name" placeholder="<?php esc_attr_e( 'Enter mother name', 'school-management-system' ); ?>" value="">
 						</div>
 						<div class="wlsm-form-group wlsm-col-4">
 							<label for="wlsm_mother_phone" class="wlsm-font-bold">
-								<?php esc_html_e( 'Mother\'s Phone', 'school-management' ); ?>:
+								<?php esc_html_e( 'Mother\'s Phone', 'school-management-system' ); ?>:
 							</label>
-							<input type="text" name="mother_phone" class="wlsm-form-control" id="wlsm_mother_phone" placeholder="<?php esc_attr_e( 'Enter mother phone number', 'school-management' ); ?>" value="">
+							<input type="text" name="mother_phone" class="wlsm-form-control" id="wlsm_mother_phone" placeholder="<?php esc_attr_e( 'Enter mother phone number', 'school-management-system' ); ?>" value="">
 						</div>
 						<?php if ( $school_registration_parent_occupation or empty( $school_id ) ) : ?>
 							<div class="wlsm-form-group wlsm-col-4">
 								<label for="wlsm_mother_occupation" class="wlsm-font-bold">
-									<?php esc_html_e( 'Mother\'s Occupation', 'school-management' ); ?>:
+									<?php esc_html_e( 'Mother\'s Occupation', 'school-management-system' ); ?>:
 								</label>
-								<input type="text" name="mother_occupation" class="wlsm-form-control" id="wlsm_mother_occupation" placeholder="<?php esc_attr_e( 'Enter mother occupation', 'school-management' ); ?>" value="">
+								<input type="text" name="mother_occupation" class="wlsm-form-control" id="wlsm_mother_occupation" placeholder="<?php esc_attr_e( 'Enter mother occupation', 'school-management-system' ); ?>" value="">
 							</div>
 						<?php endif ?>
 					</div>
@@ -363,7 +363,7 @@ $nonce_action = 'wlsm-submit-registration';
 							<div class="wlsm-parent-id-proof-box">
 								<div class="wlsm-parent-id-proof-section">
 									<label for="wlsm_parent_id_proof" class="wlsm-font-bold">
-										<?php esc_html_e( 'Upload Parent ID Proof', 'school-management' ); ?>:
+										<?php esc_html_e( 'Upload Parent ID Proof', 'school-management-system' ); ?>:
 									</label>
 									<div class="custom-file mb-3">
 										<input type="file" class="custom-file-input" id="wlsm_parent_id_proof" name="parent_id_proof">
@@ -380,7 +380,7 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row">
 					<div class="wlsm-col-12">
 						<div class="wlsm-form-sub-heading wlsm-font-bold">
-							<?php esc_html_e( 'Login Detail', 'school-management' ); ?>
+							<?php esc_html_e( 'Login Detail', 'school-management-system' ); ?>
 						</div>
 					</div>
 				</div>
@@ -388,23 +388,23 @@ $nonce_action = 'wlsm-submit-registration';
 				<div class="wlsm-row wlsm-student-new-user">
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_username" class="wlsm-font-bold">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Username', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Username', 'school-management-system' ); ?>:
 						</label>
-						<input type="text" name="username" class="wlsm-form-control" id="wlsm_username" placeholder="<?php esc_attr_e( 'Enter username', 'school-management' ); ?>">
+						<input type="text" name="username" class="wlsm-form-control" id="wlsm_username" placeholder="<?php esc_attr_e( 'Enter username', 'school-management-system' ); ?>">
 					</div>
 
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_login_email" class="wlsm-font-bold">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Login Email', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Login Email', 'school-management-system' ); ?>:
 						</label>
-						<input type="email" name="login_email" class="wlsm-form-control" id="wlsm_login_email" placeholder="<?php esc_attr_e( 'Enter login email', 'school-management' ); ?>">
+						<input type="email" name="login_email" class="wlsm-form-control" id="wlsm_login_email" placeholder="<?php esc_attr_e( 'Enter login email', 'school-management-system' ); ?>">
 					</div>
 
 					<div class="wlsm-form-group wlsm-col-4">
 						<label for="wlsm_login_password" class="wlsm-font-bold">
-							<span class="wlsm-important">*</span> <?php esc_html_e( 'Password', 'school-management' ); ?>:
+							<span class="wlsm-important">*</span> <?php esc_html_e( 'Password', 'school-management-system' ); ?>:
 						</label>
-						<input type="password" name="password" class="wlsm-form-control" id="wlsm_login_password" placeholder="<?php esc_attr_e( 'Enter password', 'school-management' ); ?>">
+						<input type="password" name="password" class="wlsm-form-control" id="wlsm_login_password" placeholder="<?php esc_attr_e( 'Enter password', 'school-management-system' ); ?>">
 					</div>
 				</div>
 			</div>
@@ -415,7 +415,7 @@ $nonce_action = 'wlsm-submit-registration';
 					<div class="wlsm-row">
 						<div class="wlsm-col-12">
 							<div class="wlsm-form-sub-heading wlsm-font-bold">
-								<?php esc_html_e( 'Parent / Guardian Login Detail', 'school-management' ); ?>
+								<?php esc_html_e( 'Parent / Guardian Login Detail', 'school-management-system' ); ?>
 							</div>
 						</div>
 					</div>
@@ -425,7 +425,7 @@ $nonce_action = 'wlsm-submit-registration';
 							<div class="wlsm-form-group wlsm-row wlsm-mb-2">
 								<input type="checkbox" name="allow_parent_login" id="wlsm_allow_parent_login" class="wlsm-mt-1 wlsm-mr-1" value="1">
 								<label class="wlsm-font-bold wlsm-d-i-block wlsm-ml-1" for="wlsm_allow_parent_login">
-									<?php esc_html_e( 'Allow Parent Login?', 'school-management' ); ?>
+									<?php esc_html_e( 'Allow Parent Login?', 'school-management-system' ); ?>
 								</label>
 							</div>
 						</div>
@@ -435,23 +435,23 @@ $nonce_action = 'wlsm-submit-registration';
 						<div class="wlsm-row">
 							<div class="wlsm-form-group wlsm-col-4">
 								<label for="wlsm_parent_username" class="wlsm-font-bold">
-									<span class="wlsm-important">*</span> <?php esc_html_e( 'Username', 'school-management' ); ?>:
+									<span class="wlsm-important">*</span> <?php esc_html_e( 'Username', 'school-management-system' ); ?>:
 								</label>
-								<input type="text" name="parent_username" class="wlsm-form-control" id="wlsm_parent_username" placeholder="<?php esc_attr_e( 'Enter username', 'school-management' ); ?>">
+								<input type="text" name="parent_username" class="wlsm-form-control" id="wlsm_parent_username" placeholder="<?php esc_attr_e( 'Enter username', 'school-management-system' ); ?>">
 							</div>
 
 							<div class="wlsm-form-group wlsm-col-4">
 								<label for="wlsm_parent_login_email" class="wlsm-font-bold">
-									<span class="wlsm-important">*</span> <?php esc_html_e( 'Login Email', 'school-management' ); ?>:
+									<span class="wlsm-important">*</span> <?php esc_html_e( 'Login Email', 'school-management-system' ); ?>:
 								</label>
-								<input type="email" name="parent_login_email" class="wlsm-form-control" id="wlsm_parent_login_email" placeholder="<?php esc_attr_e( 'Enter login email', 'school-management' ); ?>">
+								<input type="email" name="parent_login_email" class="wlsm-form-control" id="wlsm_parent_login_email" placeholder="<?php esc_attr_e( 'Enter login email', 'school-management-system' ); ?>">
 							</div>
 
 							<div class="wlsm-form-group wlsm-col-4">
 								<label for="wlsm_parent_login_password" class="wlsm-font-bold">
-									<span class="wlsm-important">*</span> <?php esc_html_e( 'Password', 'school-management' ); ?>:
+									<span class="wlsm-important">*</span> <?php esc_html_e( 'Password', 'school-management-system' ); ?>:
 								</label>
-								<input type="password" name="parent_password" class="wlsm-form-control" id="wlsm_parent_login_password" placeholder="<?php esc_attr_e( 'Enter password', 'school-management' ); ?>">
+								<input type="password" name="parent_password" class="wlsm-form-control" id="wlsm_parent_login_password" placeholder="<?php esc_attr_e( 'Enter password', 'school-management-system' ); ?>">
 							</div>
 						</div>
 					</div>
@@ -462,7 +462,7 @@ $nonce_action = 'wlsm-submit-registration';
 
 			<div class="wlsm-border-top wlsm-pt-2 wlsm-mt-1">
 				<button class="button wlsm-btn btn btn-primary" type="submit" id="wlsm-submit-registration-btn">
-					<?php esc_html_e( 'Submit', 'school-management' ); ?>
+					<?php esc_html_e( 'Submit', 'school-management-system' ); ?>
 				</button>
 			</div>
 		</form>

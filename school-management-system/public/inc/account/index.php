@@ -26,14 +26,7 @@ if ( ! is_user_logged_in() ) {
 
 	// Checks if user is student.
 	$student = $wpdb->get_row(
-		$wpdb->prepare( 'SELECT sr.ID, sr.name as student_name, sr.email, sr.phone, sr.father_name, sr.admission_number, sr.enrollment_number, c.label as class_label, se.class_school_id, se.label as section_label, sr.roll_number, u.user_email as login_email, u.user_login as username, sr.session_id, ss.label as session_label, s.ID as school_id, s.label as school_name FROM ' . WLSM_STUDENT_RECORDS . ' as sr 
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-			JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-			JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = cs.school_id 
-			JOIN ' . WLSM_USERS . ' as u ON u.ID = sr.user_id 
-			WHERE sr.is_active = 1 AND sr.user_id = %d', $user_id )
+		$wpdb->prepare( 'SELECT sr.ID, sr.name as student_name, sr.email, sr.phone, sr.father_name, sr.admission_number, sr.enrollment_number, c.label as class_label, se.class_school_id, se.label as section_label, sr.roll_number, u.user_email as login_email, u.user_login as username, sr.session_id, ss.label as session_label, s.ID as school_id, s.label as school_name FROM %i as sr JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id JOIN %i as s ON s.ID = cs.school_id JOIN %i as u ON u.ID = sr.user_id WHERE sr.is_active = 1 AND sr.user_id = %d', WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_SCHOOLS, WLSM_USERS, $user_id )
 	);
 
 	$logout_url = wp_logout_url( $current_page_url );

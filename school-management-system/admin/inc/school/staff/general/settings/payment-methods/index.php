@@ -45,7 +45,7 @@ $school_stripe_secret_key      = $settings_stripe['secret_key'];
 										<?php
 										printf(
 											/* translators: %s: currency code */
-											__( 'Stripe does not support currency %s.', 'school-management-system' ),
+											esc_html__( 'Stripe does not support currency %s.', 'school-management-system' ),
 											esc_html( $currency )
 										);
 										?>

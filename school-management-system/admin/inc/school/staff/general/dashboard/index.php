@@ -12,29 +12,22 @@ $invoices_page_url = WLSM_M_Staff_Accountant::get_invoices_page_url();
 
 if ( WLSM_M_Role::check_permission( array( 'manage_classes' ), $current_school['permissions'] ) ) {
 	// Total Classes.
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_classes_query_count is built from safely prepared fragments.
 	$total_classes_count  = $wpdb->get_var( WLSM_M_Staff_Class::fetch_classes_query_count( $school_id ) );
 
 	// Total Sections.
-	$total_sections_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(DISTINCT se.ID) FROM ' . WLSM_SECTIONS . ' as se JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = cs.school_id WHERE cs.school_id = %d', $school_id ) );
+	$total_sections_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(DISTINCT se.ID) FROM %i as se JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as s ON s.ID = cs.school_id WHERE cs.school_id = %d', WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_SCHOOLS, $school_id ) );
 }
 
 if ( WLSM_M_Role::check_permission( array( 'manage_students' ), $current_school['permissions'] ) ) {
 	// Total Students.
 	$total_students_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT sr.ID) FROM ' . WLSM_STUDENT_RECORDS . ' as sr
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE ss.ID = %d AND cs.school_id = %d', $session_id, $school_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT sr.ID) FROM %i as sr JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE ss.ID = %d AND cs.school_id = %d', WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $session_id, $school_id )
 	);
 
 	// Students Active.
 	$active_students_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT sr.ID) FROM ' . WLSM_STUDENT_RECORDS . ' as sr
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE ss.ID = %d AND cs.school_id = %d AND sr.is_active = 1', $session_id, $school_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT sr.ID) FROM %i as sr JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE ss.ID = %d AND cs.school_id = %d AND sr.is_active = 1', WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $session_id, $school_id )
 	);
 }
 
@@ -46,79 +39,52 @@ if ( WLSM_M_Role::check_permission( array( 'manage_admins' ), $current_school['p
 
 if ( WLSM_M_Role::check_permission( array( 'manage_roles' ), $current_school['permissions'] ) ) {
 	// Total Roles.
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_role_query_count is built from safely prepared fragments.
 	$total_roles_count = $wpdb->get_var( WLSM_M_Staff_General::fetch_role_query_count( $school_id ) );
 }
 
 if ( WLSM_M_Role::check_permission( array( 'manage_employees' ), $current_school['permissions'] ) ) {
 	// Total Staff.
 	$total_staff_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM ' . WLSM_ADMINS . ' as a
-			JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-			WHERE sf.role = "%s" AND sf.school_id = %d', WLSM_M_Role::get_employee_key(), $school_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM %i as a JOIN %i as sf ON sf.ID = a.staff_id WHERE sf.role = %s AND sf.school_id = %d', WLSM_ADMINS, WLSM_STAFF, WLSM_M_Role::get_employee_key(), $school_id )
 	);
 
 	// Staff Active.
 	$active_staff_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM ' . WLSM_ADMINS . ' as a
-			JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-			WHERE sf.role = "%s" AND sf.school_id = %d AND a.is_active = 1', WLSM_M_Role::get_employee_key(), $school_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM %i as a JOIN %i as sf ON sf.ID = a.staff_id WHERE sf.role = %s AND sf.school_id = %d AND a.is_active = 1', WLSM_ADMINS, WLSM_STAFF, WLSM_M_Role::get_employee_key(), $school_id )
 	);
 }
 
 if ( WLSM_M_Role::check_permission( array( 'manage_admissions' ), $current_school['permissions'] ) ) {
 	// Last 15 Admissions
 	$admissions = $wpdb->get_results(
-		$wpdb->prepare( 'SELECT sr.ID, sr.name as student_name, sr.enrollment_number, sr.admission_number, sr.admission_date, c.label as class_label, se.label as section_label FROM ' . WLSM_STUDENT_RECORDS . ' as sr
-		JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-		JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-		JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-		JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-		WHERE cs.school_id = %d AND ss.ID = %d GROUP BY sr.ID ORDER BY sr.admission_date DESC LIMIT 15', $school_id, $session_id )
+		$wpdb->prepare( 'SELECT sr.ID, sr.name as student_name, sr.enrollment_number, sr.admission_number, sr.admission_date, c.label as class_label, se.label as section_label FROM %i as sr JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id WHERE cs.school_id = %d AND ss.ID = %d GROUP BY sr.ID ORDER BY sr.admission_date DESC LIMIT 15', WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id, $session_id )
 	);
 }
 
 if ( WLSM_M_Role::check_permission( array( 'manage_invoices' ), $current_school['permissions'] ) ) {
 	// Total Invoices.
 	$total_invoices_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d', $school_id, $session_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id )
 	);
 
 	// Paid Invoices.
 	$invoices_paid_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND i.status = "%s"', $school_id, $session_id, WLSM_M_Invoice::get_paid_key() )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND i.status = %s', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, WLSM_M_Invoice::get_paid_key() )
 	);
 
 	// Unpaid Invoices.
 	$invoices_unpaid_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND i.status = "%s"', $school_id, $session_id, WLSM_M_Invoice::get_unpaid_key() )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND i.status = %s', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, WLSM_M_Invoice::get_unpaid_key() )
 	);
 
 	// Invoices Partially Paid.
 	$invoices_partially_paid_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM ' . WLSM_INVOICES . ' as i
-			JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id
-			JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id
-			JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id
-			JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id
-			WHERE cs.school_id = %d AND ss.ID = %d AND i.status = "%s"', $school_id, $session_id, WLSM_M_Invoice::get_partially_paid_key() )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT i.ID) FROM %i as i JOIN %i as sr ON sr.ID = i.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id WHERE cs.school_id = %d AND ss.ID = %d AND i.status = %s', WLSM_INVOICES, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, $school_id, $session_id, WLSM_M_Invoice::get_partially_paid_key() )
 	);
 
 	// Total Payments.
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_payments_query_count is built from safely prepared fragments.
 	$total_payments_count = $wpdb->get_var( WLSM_M_Staff_Accountant::fetch_payments_query_count( $school_id, $session_id ) );
 
 	// Total Payment Received.
@@ -127,20 +93,14 @@ if ( WLSM_M_Role::check_permission( array( 'manage_invoices' ), $current_school[
 
 if ( WLSM_M_Role::check_permission( array( 'manage_inquiries' ), $current_school['permissions'] ) ) {
 	// Total Inquiries.
-	$total_inquiries_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(iq.ID) FROM ' . WLSM_INQUIRIES . ' as iq
-		WHERE iq.school_id = %d', $school_id ) );
+	$total_inquiries_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(iq.ID) FROM %i as iq WHERE iq.school_id = %d', WLSM_INQUIRIES, $school_id ) );
 
 	// Inquiries Active.
-	$active_inquiries_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(iq.ID) FROM ' . WLSM_INQUIRIES . ' as iq
-		WHERE iq.school_id = %d AND iq.is_active = 1', $school_id ) );
+	$active_inquiries_count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(iq.ID) FROM %i as iq WHERE iq.school_id = %d AND iq.is_active = 1', WLSM_INQUIRIES, $school_id ) );
 
 	// Last 10 Active Inquiries
 	$active_inquiries = $wpdb->get_results(
-		$wpdb->prepare( 'SELECT iq.ID, iq.name, iq.phone, iq.email, iq.message, iq.created_at, iq.next_follow_up, c.label as class_label FROM ' . WLSM_INQUIRIES . ' as iq
-		JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = iq.school_id
-		LEFT OUTER JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = iq.class_school_id
-		LEFT OUTER JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id
-		WHERE iq.school_id = %d AND iq.is_active = 1 GROUP BY iq.ID ORDER BY iq.created_at DESC LIMIT 10', $school_id )
+		$wpdb->prepare( 'SELECT iq.ID, iq.name, iq.phone, iq.email, iq.message, iq.created_at, iq.next_follow_up, c.label as class_label FROM %i as iq JOIN %i as s ON s.ID = iq.school_id LEFT OUTER JOIN %i as cs ON cs.ID = iq.class_school_id LEFT OUTER JOIN %i as c ON c.ID = cs.class_id WHERE iq.school_id = %d AND iq.is_active = 1 GROUP BY iq.ID ORDER BY iq.created_at DESC LIMIT 10', WLSM_INQUIRIES, WLSM_SCHOOLS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, $school_id )
 	);
 }
 ?>

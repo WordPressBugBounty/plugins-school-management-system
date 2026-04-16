@@ -58,7 +58,7 @@ class WLSM_School {
 			}
 
 			// Checks if school already exists with this label.
-			$school_exist = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) as count FROM ' . WLSM_SCHOOLS . ' as s WHERE s.label = %s AND s.ID != %d', $label, $school_id ) );
+			$school_exist = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) as count FROM %i as s WHERE s.label = %s AND s.ID != %d', WLSM_SCHOOLS, $label, $school_id ) );
 
 			if ( $school_exist ) {
 				$errors['label'] = esc_html__( 'School name already exists.', 'school-management-system' );
@@ -88,7 +88,7 @@ class WLSM_School {
 				);
 
 				// Checks if update.
-				$data['updated_at'] = date( 'Y-m-d H:i:s' );
+				$data['updated_at'] = current_time( 'mysql' );
 
 				$success = $wpdb->update( WLSM_SCHOOLS, $data, array( 'ID' => $school_id ) );
 				$message = esc_html__( 'School updated successfully.', 'school-management-system' );
@@ -132,7 +132,8 @@ class WLSM_School {
 		$page_url = WLSM_M_School::get_page_url();
 	
 		// Create a prepared statement to prevent SQL injection.
-		$query = $wpdb->prepare( WLSM_M_School::fetch_classes_query( $school_id ) );
+		$query = // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_classes_query is built from safely prepared fragments.
+		WLSM_M_School::fetch_classes_query( $school_id );
 	
 		$query_filter = $query;
 	
@@ -147,7 +148,7 @@ class WLSM_School {
 		if ( esc_sql( $_POST['search']['value'] ) ) {
 			$search_value = sanitize_text_field( esc_sql($_POST['search']['value']) );
 			if ( '' !== $search_value ) {
-				$condition .= $wpdb->prepare( '(c.label LIKE "%%%s%%")', $search_value );
+				$condition .= $wpdb->prepare( '(c.label LIKE %s)', '%' . $wpdb->esc_like( $search_value ) . '%' );
 	
 				$query_filter .= ( ' HAVING ' . $condition );
 			}
@@ -177,16 +178,19 @@ class WLSM_School {
 		$rows_query = WLSM_M_School::fetch_classes_query_count( $school_id );
 	
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var( $rows_query );
 	
 		// Filtered rows count.
 		if ( $condition ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and $condition are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var( $rows_query . ' WHERE (' . $condition . ')' );
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 	
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results( $query_filter . $limit );
 	
 		$data = array();
@@ -351,9 +355,10 @@ class WLSM_School {
 				}
 
 				// Insert class_school records.
-				$sql     = 'INSERT IGNORE INTO ' . WLSM_CLASS_SCHOOL . ' (class_id, school_id) VALUES ';
-				$sql     .= implode( ', ', $place_holders );
-				$success = $wpdb->query( $wpdb->prepare( "$sql ", $values ) );
+				$sql = 'INSERT IGNORE INTO %i (class_id, school_id) VALUES ' . implode( ', ', $place_holders );
+				array_unshift( $values, WLSM_CLASS_SCHOOL );
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains dynamic placeholders but no insecure inputs; table name is secured with %i.
+				$success = $wpdb->query( $wpdb->prepare( $sql, $values ) );
 
 				$message = esc_html__( 'Classes assigned successfully.', 'school-management-system' );
 
@@ -397,7 +402,8 @@ class WLSM_School {
 		$page_url = WLSM_M_School::get_page_url();
 	
 		// Create a prepared statement to prevent SQL injection.
-		$query = $wpdb->prepare( WLSM_M_School::fetch_admins_query( $school_id ) );
+		$query = // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_admins_query is built from safely prepared fragments.
+		WLSM_M_School::fetch_admins_query( $school_id );
 	
 		$query_filter = $query;
 	
@@ -458,16 +464,19 @@ class WLSM_School {
 		$rows_query = WLSM_M_School::fetch_admins_query_count( $school_id );
 	
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var( $rows_query );
 	
 		// Filtered rows count.
 		if ( $condition ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and $condition are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var( $rows_query . ' AND (' . $condition . ')' );
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 	
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results( $query_filter . $limit );
 	
 		$data = array();
@@ -919,7 +928,7 @@ class WLSM_School {
 						'user_id' => $update_staff_user_id,
 					);
 
-					$staff_data['updated_at'] = date( 'Y-m-d H:i:s' );
+					$staff_data['updated_at'] = current_time( 'mysql' );
 
 					$success = $wpdb->update( WLSM_STAFF, $staff_data, array( 'ID' => $staff_id ) );
 
@@ -933,7 +942,7 @@ class WLSM_School {
 					'name' => $name,
 				);
 
-				$admin_data['updated_at'] = date( 'Y-m-d H:i:s' );
+				$admin_data['updated_at'] = current_time( 'mysql' );
 
 				$success = $wpdb->update( WLSM_ADMINS, $admin_data, array( 'ID' => $admin_id ) );
 				$message = esc_html__( 'Admin updated successfully.', 'school-management-system' );
@@ -1017,11 +1026,11 @@ class WLSM_School {
 				'role'      => WLSM_M_Role::get_admin_key(),
 			);
 
-			$staff = $wpdb->get_row( $wpdb->prepare( 'SELECT sf.ID FROM ' . WLSM_STAFF . ' as sf WHERE sf.school_id = %d AND sf.user_id = %d', $school_id, $user_id ) );
+			$staff = $wpdb->get_row( $wpdb->prepare( 'SELECT sf.ID FROM %i as sf WHERE sf.school_id = %d AND sf.user_id = %d', WLSM_STAFF, $school_id, $user_id ) );
 
 			// Checks if update or insert.
 			if ( $staff ) {
-				$data['updated_at'] = date( 'Y-m-d H:i:s' );
+				$data['updated_at'] = current_time( 'mysql' );
 
 				$success = $wpdb->update( WLSM_STAFF, $data, array( 'ID' => $staff->ID ) );
 			} else {

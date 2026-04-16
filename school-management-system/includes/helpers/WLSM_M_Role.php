@@ -18,7 +18,7 @@ class WLSM_M_Role {
 
 		$staff_in_school = false;
 
-		$staff = $wpdb->get_results( $wpdb->prepare( 'SELECT sf.role, sf.permissions, sf.school_id, s.label as school_name FROM ' . WLSM_STAFF . ' as sf JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = sf.school_id WHERE sf.user_id = %d', $user_id ) );
+		$staff = $wpdb->get_results( $wpdb->prepare( 'SELECT sf.role, sf.permissions, sf.school_id, s.label as school_name FROM %i as sf JOIN %i as s ON s.ID = sf.school_id WHERE sf.user_id = %d', WLSM_STAFF, WLSM_SCHOOLS, $user_id ) );
 
 		if ( count( $staff ) ) {
 			foreach ( $staff as $user ) {
@@ -71,8 +71,8 @@ class WLSM_M_Role {
 	public static function get_staff_roles( $school_id ) {
 		global $wpdb;
 
-		$staff_roles = $wpdb->get_results( $wpdb->prepare( 'SELECT r.ID, r.name FROM ' . WLSM_ROLES . ' as r 
-		WHERE r.school_id = %d', $school_id ), OBJECT_K );
+		$staff_roles = $wpdb->get_results( $wpdb->prepare( 'SELECT r.ID, r.name FROM %i as r 
+		WHERE r.school_id = %d', WLSM_ROLES, $school_id ), OBJECT_K );
 
 		return $staff_roles;
 	}

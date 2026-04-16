@@ -1,11 +1,11 @@
-=== The School Management - Education & Learning Management  ===
+=== The School Management - Education & Learning ERP  ===
 Plugin name: School Management System
 Contributors: weblizar
 Donate link: https://weblizar.com
 Tags: School Management, Student Management, Learning Management, Fees Management, Education
-Requires at least: 7.4
+Requires at least: 6.2
 Tested up to: 6.9
-Stable tag: 5.3
+Stable tag: 5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,11 +82,11 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 
 * **Super Admin** - Super admin can add multiple schools, school admin can manage the all school activity in single dashboard.
 
-* **School Admin** - School Admin can manage the all school releted activities. 
+* **School Admin** - School Admin can manage the all school releted activities.
 
-* **Classes** - Super admin create unlimited classes according to school wise and Assign the class to each school. 
+* **Classes** - Super admin create unlimited classes according to school wise and Assign the class to each school.
 
-* **Sections** - School admin  are create the unlimited Sections and also  assign the Sections to  class wise. 
+* **Sections** - School admin  are create the unlimited Sections and also  assign the Sections to  class wise.
 
 * **Activities** - Create unlimited extra acitvites just like sport, swimming, Games and according to activities wise set the cost of activity.
 
@@ -169,6 +169,12 @@ https://www.youtube.com/watch?v=VkvOxr5DQ5Q
 == Changelog ==
 
 For more information, see [Weblizar](https://www.weblizar.com/)
+
+= 5.4 =[16-04-2026]
+* Database Security: Modernized SQL queries with %i identifier placeholders and logical prepare logic.
+* Hardened partial search matching with esc_like() for enhanced security.
+* PHP 8.x Compatibility: Replaced restricted date() functions with current_time('mysql') for reliable, timezone-aware date handling.
+* Resolved various PreparedSQL and QuotedSimplePlaceholder security warnings across core managers.
 
 = 5.3 =[12-12-2025]
 * Tested with Wordpress 6.9

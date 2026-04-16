@@ -1,12 +1,15 @@
 <?php
 /*
- * Plugin Name: The School Management - Education & Learning Management
+ * Plugin Name: The School Management - Education & Learning ERP
  * Plugin URI: https://wordpress.org/plugins/school-management-system/
  * Description: The School Management System is a WordPress plugin to manage school related entities such as classes, sections, students, ID cards, teachers, staff, fees, invoices, noticeboard and much more. Its completely solutions for school management.
- * Version: 5.3
+ * Version: 5.4
+ * Requires at least: 6.2
  * Author: Weblizar
  * Author URI: https://weblizar.com
- * Text Domain: school-management
+ * Text Domain: school-management-system
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 defined('ABSPATH') || die();
@@ -57,14 +60,14 @@ final class WLSM_School_Management
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'add_plugin_page_settings_link');
 function add_plugin_page_settings_link($links)
 {
-	$links[] = '<a href="' . admin_url('admin.php?page=sm-settings') . '">' . __('Settings') . '</a>';
+	$links[] = '<a href="' . admin_url('admin.php?page=sm-settings') . '">' . __('Settings', 'school-management-system') . '</a>';
 	return $links;
 }
 
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'add_plugin_page_pro_link');
 function add_plugin_page_pro_link($links)
 {
-	$links[] = '<a href="' . ('https://weblizar.com/plugins/school-management/') . '" style="color:red;"> ' . __('Get Pro') . '</a>';
+	$links[] = '<a href="' . ('https://weblizar.com/plugins/school-management/') . '" style="color:red;"> ' . __('Get Pro', 'school-management-system') . '</a>';
 	return $links;
 }
 

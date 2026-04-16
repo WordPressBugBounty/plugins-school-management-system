@@ -12,22 +12,19 @@ $session_id = $current_session['ID'];
 
 if ( WLSM_M_Role::check_permission( array( 'manage_roles' ), $current_school['permissions'] ) ) {
 	// Total Roles.
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- fetch_role_query_count is built from safely prepared fragments.
 	$total_roles_count = $wpdb->get_var( WLSM_M_Staff_General::fetch_role_query_count( $school_id ) );
 }
 
 if ( WLSM_M_Role::check_permission( array( 'manage_employees' ), $current_school['permissions'] ) ) {
 	// Total Staff.
 	$total_staff_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM ' . WLSM_ADMINS . ' as a
-			JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-			WHERE sf.role = "%s" AND sf.school_id = %d', WLSM_M_Role::get_employee_key(), $school_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM %i as a JOIN %i as sf ON sf.ID = a.staff_id WHERE sf.role = %s AND sf.school_id = %d', WLSM_ADMINS, WLSM_STAFF, WLSM_M_Role::get_employee_key(), $school_id )
 	);
 
 	// Staff Active.
 	$active_staff_count = $wpdb->get_var(
-		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM ' . WLSM_ADMINS . ' as a
-			JOIN ' . WLSM_STAFF . ' as sf ON sf.ID = a.staff_id
-			WHERE sf.role = "%s" AND sf.school_id = %d AND a.is_active = 1', WLSM_M_Role::get_employee_key(), $school_id )
+		$wpdb->prepare( 'SELECT COUNT(DISTINCT a.ID) FROM %i as a JOIN %i as sf ON sf.ID = a.staff_id WHERE sf.role = %s AND sf.school_id = %d AND a.is_active = 1', WLSM_ADMINS, WLSM_STAFF, WLSM_M_Role::get_employee_key(), $school_id )
 	);
 }
 

@@ -68,48 +68,48 @@ class WLSM_P_Registration {
 			// Check if current session exists.
 			$session = WLSM_M_Session::get_session( $current_session_id );
 			if ( ! $session ) {
-				throw new Exception( esc_html__( 'Current session not found. Please contact the administrator.', 'school-management' ) );
+				throw new Exception( esc_html__( 'Current session not found. Please contact the administrator.', 'school-management-system' ) );
 			}
 
 			$session_id = $session->ID;
 
 			// Personal Detail.
 			if ( empty( $name ) ) {
-				$errors['name'] = esc_html__( 'Please specify student name.', 'school-management' );
+				$errors['name'] = esc_html__( 'Please specify student name.', 'school-management-system' );
 			}
 			if ( strlen( $name ) > 60 ) {
-				$errors['name'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['name'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $religion ) && strlen( $religion ) > 40 ) {
-				$errors['religion'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['religion'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $caste ) && strlen( $caste ) > 40 ) {
-				$errors['caste'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['caste'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $phone ) && strlen( $phone ) > 40 ) {
-				$errors['phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $email ) ) {
 				if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-					$errors['email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+					$errors['email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 				} elseif ( strlen( $email ) > 60 ) {
-					$errors['email'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+					$errors['email'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 				}
 			}
 			if ( ! empty( $city ) && strlen( $city ) > 60 ) {
-				$errors['city'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['city'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $state ) && strlen( $state ) > 60 ) {
-				$errors['state'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['state'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $country ) && strlen( $country ) > 60 ) {
-				$errors['country'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['country'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! in_array( $gender, array_keys( WLSM_Helper::gender_list() ) ) ) {
-				throw new Exception( esc_html__( 'Please specify gender.', 'school-management' ) );
+				throw new Exception( esc_html__( 'Please specify gender.', 'school-management-system' ) );
 			}
 			if ( ! empty( $blood_group ) && ! in_array( $blood_group, array_keys( WLSM_Helper::blood_group_list() ) ) ) {
-				throw new Exception( esc_html__( 'Please specify blood group.', 'school-management' ) );
+				throw new Exception( esc_html__( 'Please specify blood group.', 'school-management-system' ) );
 			}
 			if ( ! empty( $dob ) ) {
 				$dob = $dob->format( 'Y-m-d' );
@@ -119,17 +119,17 @@ class WLSM_P_Registration {
 
 			// Admission Detail.
 			if ( empty( $school_id ) ) {
-				$errors['school_id'] = esc_html__( 'Please select a school.', 'school-management' );
+				$errors['school_id'] = esc_html__( 'Please select a school.', 'school-management-system' );
 				wp_send_json_error( $errors );
 			} else {
 				if ( empty( $class_id ) ) {
-					$errors['class_id'] = esc_html__( 'Please select a class.', 'school-management' );
+					$errors['class_id'] = esc_html__( 'Please select a class.', 'school-management-system' );
 					wp_send_json_error( $errors );
 				} else {
 					// Checks if class exists in the school.
 					$class_school = WLSM_M_Staff_Class::fetch_class( $school_id, $class_id );
 					if ( ! $class_school ) {
-						$errors['class_id'] = esc_html__( 'Class not found.', 'school-management' );
+						$errors['class_id'] = esc_html__( 'Class not found.', 'school-management-system' );
 						wp_send_json_error( $errors );
 					} else {
 						$class_school_id = $class_school->ID;
@@ -141,79 +141,79 @@ class WLSM_P_Registration {
 			$admission_date = current_time( 'Y-m-d' );
 
 			if ( empty( $section_id ) ) {
-				$errors['section_id'] = esc_html__( 'Please select section.', 'school-management' );
+				$errors['section_id'] = esc_html__( 'Please select section.', 'school-management-system' );
 				wp_send_json_error( $errors );
 			}
 			if ( isset( $photo['tmp_name'] ) && ! empty( $photo['tmp_name'] ) ) {
 				if ( ! WLSM_Helper::is_valid_file( $photo, 'image' ) ) {
-					$errors['photo'] = esc_html__( 'Please provide photo in JPG, JPEG or PNG format.', 'school-management' );
+					$errors['photo'] = esc_html__( 'Please provide photo in JPG, JPEG or PNG format.', 'school-management-system' );
 				}
 			}
 			if ( isset( $id_proof['tmp_name'] ) && ! empty( $id_proof['tmp_name'] ) ) {
 				if ( ! WLSM_Helper::is_valid_file( $id_proof, 'attachment' ) ) {
-					$errors['id_proof'] = esc_html__( 'File type is not supported.', 'school-management' );
+					$errors['id_proof'] = esc_html__( 'File type is not supported.', 'school-management-system' );
 				}
 			}
 			if ( isset( $parent_id_proof['tmp_name'] ) && ! empty( $parent_id_proof['tmp_name'] ) ) {
 				if ( ! WLSM_Helper::is_valid_file( $parent_id_proof, 'attachment' ) ) {
-					$errors['parent_id_proof'] = esc_html__( 'File type is not supported.', 'school-management' );
+					$errors['parent_id_proof'] = esc_html__( 'File type is not supported.', 'school-management-system' );
 				}
 			}
 
 			// Parent Detail.
 			if ( ! empty( $father_name ) && strlen( $father_name ) > 60 ) {
-				$errors['father_name'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['father_name'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $father_phone ) && strlen( $father_phone ) > 40 ) {
-				$errors['father_phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['father_phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $father_occupation ) && strlen( $father_occupation ) > 60 ) {
-				$errors['father_occupation'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['father_occupation'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $mother_name ) && strlen( $mother_name ) > 60 ) {
-				$errors['mother_name'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['mother_name'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $mother_phone ) && strlen( $mother_phone ) > 40 ) {
-				$errors['mother_phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['mother_phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 			if ( ! empty( $mother_occupation ) && strlen( $mother_occupation ) > 60 ) {
-				$errors['mother_occupation'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+				$errors['mother_occupation'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 			}
 
 			// Checks if section exists.
 			$section = WLSM_M_Staff_Class::get_section( $school_id, $section_id, $class_school_id );
 			if ( ! $section ) {
-				$errors['section_id'] = esc_html__( 'Section not found.', 'school-management' );
+				$errors['section_id'] = esc_html__( 'Section not found.', 'school-management-system' );
 				wp_send_json_error( $errors );
 			}
 
 			// Student Login Detail.
 			if ( empty( $username ) ) {
-				$errors['username'] = esc_html__( 'Please provide username.', 'school-management' );
+				$errors['username'] = esc_html__( 'Please provide username.', 'school-management-system' );
 			}
 			if ( empty( $login_email ) ) {
-				$errors['login_email'] = esc_html__( 'Please provide login email.', 'school-management' );
+				$errors['login_email'] = esc_html__( 'Please provide login email.', 'school-management-system' );
 			}
 			if ( ! filter_var( $login_email, FILTER_VALIDATE_EMAIL ) ) {
-				$errors['login_email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+				$errors['login_email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 			}
 			if ( empty( $password ) ) {
-				$errors['password'] = esc_html__( 'Please provide login password.', 'school-management' );
+				$errors['password'] = esc_html__( 'Please provide login password.', 'school-management-system' );
 			}
 
 			// Parent / Guardian Login Detail.
 			if ( $allow_parent_login ) {
 				if ( empty( $parent_username ) ) {
-					$errors['parent_username'] = esc_html__( 'Please provide username.', 'school-management' );
+					$errors['parent_username'] = esc_html__( 'Please provide username.', 'school-management-system' );
 				}
 				if ( empty( $parent_login_email ) ) {
-					$errors['parent_login_email'] = esc_html__( 'Please provide login email.', 'school-management' );
+					$errors['parent_login_email'] = esc_html__( 'Please provide login email.', 'school-management-system' );
 				}
 				if ( ! filter_var( $parent_login_email, FILTER_VALIDATE_EMAIL ) ) {
-					$errors['parent_login_email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+					$errors['parent_login_email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 				}
 				if ( empty( $parent_password ) ) {
-					$errors['parent_password'] = esc_html__( 'Please provide login password.', 'school-management' );
+					$errors['parent_password'] = esc_html__( 'Please provide login password.', 'school-management-system' );
 				}
 			}
 
@@ -222,7 +222,7 @@ class WLSM_P_Registration {
 			if ( $gdpr_enable ) {
 				$gdpr = isset( $_POST['gdpr'] ) ? (bool) ( $_POST['gdpr'] ) : false;
 				if ( ! $gdpr ) {
-					$errors['gdpr'] = esc_html__( 'Please check for GDPR consent.', 'school-management' );
+					$errors['gdpr'] = esc_html__( 'Please check for GDPR consent.', 'school-management-system' );
 				}
 			}
 		} catch ( Exception $exception ) {
@@ -457,36 +457,36 @@ class WLSM_P_Registration {
 			$errors = array();
 			// Personal Detail.
 			if ( empty( $name ) ) {
-				$errors['name'] = esc_html__( 'Please specify name.', 'school-management' );
+				$errors['name'] = esc_html__( 'Please specify name.', 'school-management-system' );
 			}
 			if ( ! empty( $phone ) && strlen( $phone ) > 40 ) {
-				$errors['phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 
 			if ( ! empty( $email ) ) {
 				if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-					$errors['email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+					$errors['email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 				} elseif ( strlen( $email ) > 60 ) {
-					$errors['email'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+					$errors['email'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 				}
 			}
 
 			if ( empty( $school_id ) ) {
-				$errors['school_id'] = esc_html__( 'Please select a school.', 'school-management' );
+				$errors['school_id'] = esc_html__( 'Please select a school.', 'school-management-system' );
 			}
 
 			// staff Login Detail.
 			if ( empty( $username ) ) {
-				$errors['username'] = esc_html__( 'Please provide username.', 'school-management' );
+				$errors['username'] = esc_html__( 'Please provide username.', 'school-management-system' );
 			}
 			if ( empty( $login_email ) ) {
-				$errors['login_email'] = esc_html__( 'Please provide login email.', 'school-management' );
+				$errors['login_email'] = esc_html__( 'Please provide login email.', 'school-management-system' );
 			}
 			if ( ! filter_var( $login_email, FILTER_VALIDATE_EMAIL ) ) {
-				$errors['login_email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+				$errors['login_email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 			}
 			if ( empty( $password ) ) {
-				$errors['password'] = esc_html__( 'Please provide login password.', 'school-management' );
+				$errors['password'] = esc_html__( 'Please provide login password.', 'school-management-system' );
 			}
 
 			if ( ! empty( $dob ) ) {
@@ -500,16 +500,16 @@ class WLSM_P_Registration {
 				// Checks if class exists in the school.
 				$class_school = WLSM_M_Staff_Class::get_class( $school_id, $class_id );
 				if ( ! $class_school ) {
-					$errors['class_id'] = esc_html__( 'Class not found.', 'school-management' );
+					$errors['class_id'] = esc_html__( 'Class not found.', 'school-management-system' );
 				} else {
 					$class_school_id = $class_school->ID;
 					if ( ! $section_id ) {
-						$errors['section_id'] = esc_html__( 'Please select a section.', 'school-management' );
+						$errors['section_id'] = esc_html__( 'Please select a section.', 'school-management-system' );
 					} else {
 						// Checks if section exists.
 						$section = WLSM_M_Staff_Class::get_section( $school_id, $section_id, $class_school_id );
 						if ( ! $section ) {
-							$errors['section_id'] = esc_html__( 'Section not found.', 'school-management' );
+							$errors['section_id'] = esc_html__( 'Section not found.', 'school-management-system' );
 						}
 					}
 				}
@@ -584,7 +584,7 @@ class WLSM_P_Registration {
 					throw new Exception( $wpdb->last_error );
 				}
 
-				$message = esc_html( 'Staff User Created Successfully.', 'school-management' );
+				$message = esc_html( 'Staff User Created Successfully.', 'school-management-system' );
 
 				$wpdb->query( 'COMMIT;' );
 
@@ -625,32 +625,32 @@ class WLSM_P_Registration {
 			$errors = array();
 			// Personal Detail.
 			if ( empty( $name ) ) {
-				$errors['name'] = esc_html__( 'Please specify name.', 'school-management' );
+				$errors['name'] = esc_html__( 'Please specify name.', 'school-management-system' );
 			}
 			if ( ! empty( $phone ) && strlen( $phone ) > 40 ) {
-				$errors['phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management' );
+				$errors['phone'] = esc_html__( 'Maximum length cannot exceed 40 characters.', 'school-management-system' );
 			}
 
 			if ( ! empty( $email ) ) {
 				if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
-					$errors['email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+					$errors['email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 				} elseif ( strlen( $email ) > 60 ) {
-					$errors['email'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management' );
+					$errors['email'] = esc_html__( 'Maximum length cannot exceed 60 characters.', 'school-management-system' );
 				}
 			}
 
 			// staff Login Detail.
 			if ( empty( $username ) ) {
-				$errors['user_name'] = esc_html__( 'Please provide username.', 'school-management' );
+				$errors['user_name'] = esc_html__( 'Please provide username.', 'school-management-system' );
 			}
 			if ( empty( $login_email ) ) {
-				$errors['login_email'] = esc_html__( 'Please provide login email.', 'school-management' );
+				$errors['login_email'] = esc_html__( 'Please provide login email.', 'school-management-system' );
 			}
 			if ( ! filter_var( $login_email, FILTER_VALIDATE_EMAIL ) ) {
-				$errors['login_email'] = esc_html__( 'Please provide a valid email.', 'school-management' );
+				$errors['login_email'] = esc_html__( 'Please provide a valid email.', 'school-management-system' );
 			}
 			if ( empty( $password ) ) {
-				$errors['password'] = esc_html__( 'Please provide login password.', 'school-management' );
+				$errors['password'] = esc_html__( 'Please provide login password.', 'school-management-system' );
 			}
 		} catch ( Exception $exception ) {
 			$buffer = ob_get_clean();
@@ -719,7 +719,7 @@ class WLSM_P_Registration {
 					throw new Exception( $wpdb->last_error );
 				}
 
-				$message = esc_html( 'School Created Successfully.', 'school-management' );
+				$message = esc_html( 'School Created Successfully.', 'school-management-system' );
 
 				$wpdb->query( 'COMMIT;' );
 

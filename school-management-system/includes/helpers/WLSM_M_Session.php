@@ -9,7 +9,8 @@ class WLSM_M_Session {
 	}
 
 	public static function fetch_query() {
-		$query = 'SELECT ss.ID, ss.label, ss.start_date, ss.end_date FROM ' . WLSM_SESSIONS . ' as ss';
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT ss.ID, ss.label, ss.start_date, ss.end_date FROM %i as ss', WLSM_SESSIONS );
 		return $query;
 	}
 
@@ -19,41 +20,40 @@ class WLSM_M_Session {
 	}
 
 	public static function fetch_query_count() {
-		$query = 'SELECT COUNT(ss.ID) FROM ' . WLSM_SESSIONS . ' as ss';
+		global $wpdb;
+		$query = $wpdb->prepare( 'SELECT COUNT(ss.ID) FROM %i as ss', WLSM_SESSIONS );
 		return $query;
 	}
 
 	public static function get_session( $id ) {
 		global $wpdb;
-		$session = $wpdb->get_row( $wpdb->prepare( 'SELECT ss.ID FROM ' . WLSM_SESSIONS . ' as ss WHERE ss.ID = %d', $id ) );
+		$session = $wpdb->get_row( $wpdb->prepare( 'SELECT ss.ID FROM %i as ss WHERE ss.ID = %d', WLSM_SESSIONS, $id ) );
 		return $session;
 	}
 
 	public static function get_session_label( $id ) {
 		global $wpdb;
-		$session = $wpdb->get_var( $wpdb->prepare( 'SELECT ss.label FROM ' . WLSM_SESSIONS . ' as ss WHERE ss.ID = %d', $id ) );
+		$session = $wpdb->get_var( $wpdb->prepare( 'SELECT ss.label FROM %i as ss WHERE ss.ID = %d', WLSM_SESSIONS, $id ) );
 		return $session;
 	}
 
 	public static function fetch_session( $id ) {
 		global $wpdb;
-		$session = $wpdb->get_row( $wpdb->prepare( 'SELECT ss.ID, ss.label, ss.start_date, ss.end_date FROM ' . WLSM_SESSIONS . ' as ss WHERE ss.ID = %d', $id ) );
+		$session = $wpdb->get_row( $wpdb->prepare( 'SELECT ss.ID, ss.label, ss.start_date, ss.end_date FROM %i as ss WHERE ss.ID = %d', WLSM_SESSIONS, $id ) );
 		return $session;
 	}
 
 	public static function fetch_sessions() {
 		global $wpdb;
-		$sessions = $wpdb->get_results( 'SELECT ss.ID, ss.label FROM ' . WLSM_SESSIONS . ' as ss ORDER BY ss.label ASC, ss.ID ASC' );
+		$sessions = $wpdb->get_results( $wpdb->prepare( 'SELECT ss.ID, ss.label FROM %i as ss ORDER BY ss.label ASC, ss.ID ASC', WLSM_SESSIONS ) );
 		return $sessions;
 	}
 
 	public static function get_next_sessions( $current_session_id ) {
 		global $wpdb;
-		$current_session = $wpdb->get_row( $wpdb->prepare( 'SELECT ss.end_date FROM ' . WLSM_SESSIONS . ' as ss 
-			WHERE ID = %d', $current_session_id ) );
+		$current_session = $wpdb->get_row( $wpdb->prepare( 'SELECT ss.end_date FROM %i as ss WHERE ID = %d', WLSM_SESSIONS, $current_session_id ) );
 
-		$next_sessions = $wpdb->get_results( $wpdb->prepare( 'SELECT ss.ID, ss.label FROM ' . WLSM_SESSIONS . ' as ss 
-			WHERE start_date > %s', $current_session->end_date ) );
+		$next_sessions = $wpdb->get_results( $wpdb->prepare( 'SELECT ss.ID, ss.label FROM %i as ss WHERE start_date > %s', WLSM_SESSIONS, $current_session->end_date ) );
 
 		return $next_sessions;
 	}

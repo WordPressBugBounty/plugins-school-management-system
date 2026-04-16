@@ -114,8 +114,8 @@ class WLSM_Staff_Accountant
 				if (esc_sql($_POST['search']['value'])) {
 					$search_value = sanitize_text_field(esc_sql($_POST['search']['value']));
 					if ('' !== $search_value) {
-						$search_value = '%' . $search_value . '%'; // Add wildcard characters for partial matching
-
+						$search_value_like = '%' . $wpdb->esc_like($search_value) . '%';
+				
 						$condition .= $wpdb->prepare(
 							'(i.invoice_number LIKE %s) OR ' .
 							'(i.label LIKE %s) OR ' .
@@ -125,14 +125,14 @@ class WLSM_Staff_Accountant
 							'(sr.phone LIKE %s) OR ' .
 							'(c.label LIKE %s) OR ' .
 							'(se.label LIKE %s)',
-							$search_value,
-							$search_value,
-							$search_value,
-							$search_value,
-							$search_value,
-							$search_value,
-							$search_value,
-							$search_value
+							$search_value_like,
+							$search_value_like,
+							$search_value_like,
+							$search_value_like,
+							$search_value_like,
+							$search_value_like,
+							$search_value_like,
+							$search_value_like
 						);
 
 						$search_value_lowercase = strtolower($search_value);
@@ -174,7 +174,7 @@ class WLSM_Staff_Accountant
 
 						if ($date_issued && isset($format_date_issued)) {
 							$date_issued = $date_issued->format($format_date_issued);
-							$condition .= $wpdb->prepare(' OR (i.date_issued LIKE %s)', '%' . $date_issued . '%');
+							$condition .= $wpdb->prepare(' OR (i.date_issued LIKE %s)', '%' . $wpdb->esc_like($date_issued) . '%');
 						}
 
 						$due_date = DateTime::createFromFormat(WLSM_Config::date_format(), $search_value);
@@ -203,7 +203,7 @@ class WLSM_Staff_Accountant
 
 						if ($due_date && isset($format_due_date)) {
 							$due_date = $due_date->format($format_due_date);
-							$condition .= $wpdb->prepare(' OR (i.due_date LIKE %s)', '%' . $due_date . '%');
+							$condition .= $wpdb->prepare(' OR (i.due_date LIKE %s)', '%' . $wpdb->esc_like($due_date) . '%');
 						}
 
 						// Finally, construct the query condition
@@ -235,16 +235,19 @@ class WLSM_Staff_Accountant
 				$rows_query = WLSM_M_Staff_Accountant::fetch_invoices_query_count($school_id, $session_id, $filter);
 
 				// Total rows count.
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 				$total_rows_count = $wpdb->get_var($rows_query);
 
 				// Filtered rows count.
 				if ($condition) {
+					// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic components are built from safely prepared fragments.
 					$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 				} else {
 					$filter_rows_count = $total_rows_count;
 				}
 
 				// Filtered limit rows.
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 				$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 				$data = array();
@@ -481,7 +484,7 @@ class WLSM_Staff_Accountant
 					$message = esc_html__('Invoice updated successfully.', 'school-management-system');
 					$reset = false;
 
-					$invoice_data['updated_at'] = date('Y-m-d H:i:s');
+					$invoice_data['updated_at'] = current_time('mysql');
 
 					$success = $wpdb->update(WLSM_INVOICES, $invoice_data, array('ID' => $invoice_id));
 
@@ -848,7 +851,7 @@ class WLSM_Staff_Accountant
 
 				if ($created_at && isset($format_created_at)) {
 					$created_at = $created_at->format($format_created_at);
-					$condition .= $wpdb->prepare(' OR (p.created_at LIKE %s)', '%' . $created_at . '%');
+					$condition .= $wpdb->prepare(' OR (p.created_at LIKE %s)', '%' . $wpdb->esc_like($created_at) . '%');
 				}
 
 				// Finally, construct the query condition
@@ -887,16 +890,19 @@ class WLSM_Staff_Accountant
 		$rows_query = WLSM_M_Staff_Accountant::fetch_invoice_payments_query_count($school_id, $session_id, $invoice_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic segments are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -1211,7 +1217,7 @@ class WLSM_Staff_Accountant
 		if (isset($_POST['search']['value'])) {
 			$search_value = sanitize_text_field($_POST['search']['value']);
 			if ('' !== $search_value) {
-				$search_value = '%' . $search_value . '%'; // Add wildcard characters for partial matching
+				$search_value_like = '%' . $wpdb->esc_like($search_value) . '%';
 
 				$condition .= $wpdb->prepare(
 					'(p.receipt_number LIKE %s) OR ' .
@@ -1226,18 +1232,18 @@ class WLSM_Staff_Accountant
 					'(i.label LIKE %s) OR ' .
 					'(c.label LIKE %s) OR ' .
 					'(se.label LIKE %s)',
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value,
-					$search_value
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like,
+					$search_value_like
 				);
 
 				$payment_method = strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $search_value));
@@ -1271,7 +1277,7 @@ class WLSM_Staff_Accountant
 
 				if ($created_at && isset($format_created_at)) {
 					$created_at = $created_at->format($format_created_at);
-					$condition .= $wpdb->prepare(' OR (p.created_at LIKE %s)', '%' . $created_at . '%');
+					$condition .= $wpdb->prepare(' OR (p.created_at LIKE %s)', '%' . $wpdb->esc_like($created_at) . '%');
 				}
 
 				// Finally, construct the query condition
@@ -1303,16 +1309,20 @@ class WLSM_Staff_Accountant
 		$rows_query = WLSM_M_Staff_Accountant::fetch_payments_query_count($school_id, $session_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
+		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic components are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();

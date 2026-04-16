@@ -56,7 +56,7 @@ if ( isset( $_GET['section_id'] ) && ! empty( $_GET['section_id'] ) ) {
 								'span' => array( 'class' => array() )
 							)
 						),
-						$class->label
+						esc_html( $class->label )
 					);
 					?>
 				</span>

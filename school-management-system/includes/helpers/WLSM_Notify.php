@@ -14,14 +14,25 @@ class WLSM_Notify {
 		if ( $email_student_admission_enable ) {
 			global $wpdb;
 			$student = $wpdb->get_row(
-				$wpdb->prepare( 'SELECT sr.name as student_name, sr.email, sr.phone, sr.admission_number, sr.enrollment_number, c.label as class_label, se.label as section_label, sr.roll_number, u.user_email as login_email, u.user_login as username, s.label as school_name FROM ' . WLSM_STUDENT_RECORDS . ' as sr 
-					JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-					JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-					JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-					JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-					JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = cs.school_id 
-					LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sr.user_id 
-					WHERE cs.school_id = %d AND ss.ID = %d AND sr.ID = %d', $school_id, $data['session_id'], $data['student_id'] )
+				$wpdb->prepare( 'SELECT sr.name as student_name, sr.email, sr.phone, sr.admission_number, sr.enrollment_number, c.label as class_label, se.label as section_label, sr.roll_number, u.user_email as login_email, u.user_login as username, s.label as school_name FROM %i as sr 
+					JOIN %i as ss ON ss.ID = sr.session_id 
+					JOIN %i as se ON se.ID = sr.section_id 
+					JOIN %i as cs ON cs.ID = se.class_school_id 
+					JOIN %i as c ON c.ID = cs.class_id 
+					JOIN %i as s ON s.ID = cs.school_id 
+					LEFT OUTER JOIN %i as u ON u.ID = sr.user_id 
+					WHERE cs.school_id = %d AND ss.ID = %d AND sr.ID = %d',
+					WLSM_STUDENT_RECORDS,
+					WLSM_SESSIONS,
+					WLSM_SECTIONS,
+					WLSM_CLASS_SCHOOL,
+					WLSM_CLASSES,
+					WLSM_SCHOOLS,
+					WLSM_USERS,
+					$school_id,
+					$data['session_id'],
+					$data['student_id']
+				)
 			);
 
 			if ( ! $student ) {
@@ -70,16 +81,29 @@ class WLSM_Notify {
 		if ( $email_invoice_generated_enable ) {
 			global $wpdb;
 			$invoice = $wpdb->get_row(
-				$wpdb->prepare( 'SELECT i.ID, i.label as invoice_title, i.invoice_number, i.date_issued, i.due_date, (i.amount - i.discount) as payable, sr.name as student_name, sr.phone, sr.email, sr.admission_number, sr.enrollment_number, sr.roll_number, c.label as class_label, se.label as section_label, u.user_email as login_email, s.label as school_name FROM ' . WLSM_INVOICES . ' as i 
-					JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = i.student_record_id 
-					JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-					JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-					JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-					JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-					JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = cs.school_id 
-					LEFT OUTER JOIN ' . WLSM_PAYMENTS . ' as p ON p.invoice_id = i.ID 
-					LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sr.user_id 
-					WHERE cs.school_id = %d AND ss.ID = %d AND i.ID = %d', $school_id, $data['session_id'], $data['invoice_id'] )
+				$wpdb->prepare( 'SELECT i.ID, i.label as invoice_title, i.invoice_number, i.date_issued, i.due_date, (i.amount - i.discount) as payable, sr.name as student_name, sr.phone, sr.email, sr.admission_number, sr.enrollment_number, sr.roll_number, c.label as class_label, se.label as section_label, u.user_email as login_email, s.label as school_name FROM %i as i 
+					JOIN %i as sr ON sr.ID = i.student_record_id 
+					JOIN %i as ss ON ss.ID = sr.session_id 
+					JOIN %i as se ON se.ID = sr.section_id 
+					JOIN %i as cs ON cs.ID = se.class_school_id 
+					JOIN %i as c ON c.ID = cs.class_id 
+					JOIN %i as s ON s.ID = cs.school_id 
+					LEFT OUTER JOIN %i as p ON p.invoice_id = i.ID 
+					LEFT OUTER JOIN %i as u ON u.ID = sr.user_id 
+					WHERE cs.school_id = %d AND ss.ID = %d AND i.ID = %d',
+					WLSM_INVOICES,
+					WLSM_STUDENT_RECORDS,
+					WLSM_SESSIONS,
+					WLSM_SECTIONS,
+					WLSM_CLASS_SCHOOL,
+					WLSM_CLASSES,
+					WLSM_SCHOOLS,
+					WLSM_PAYMENTS,
+					WLSM_USERS,
+					$school_id,
+					$data['session_id'],
+					$data['invoice_id']
+				)
 			);
 
 			if ( ! $invoice ) {
@@ -130,16 +154,7 @@ class WLSM_Notify {
 		if ( $email_online_fee_submission_enable ) {
 			global $wpdb;
 			$payment = $wpdb->get_row(
-				$wpdb->prepare( 'SELECT sr.name as student_name, sr.admission_number, sr.enrollment_number, sr.roll_number, sr.phone, sr.email, p.receipt_number, p.amount, p.payment_method, p.created_at, p.invoice_label, p.invoice_id, i.label as invoice_title, c.label as class_label, se.label as section_label, u.user_email as login_email, s.label as school_name FROM ' . WLSM_PAYMENTS . ' as p 
-					JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = p.school_id 
-					JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = p.student_record_id 
-					JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-					JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-					JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-					JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-					LEFT OUTER JOIN ' . WLSM_INVOICES . ' as i ON i.ID = p.invoice_id 
-					LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sr.user_id 
-					WHERE p.school_id = %d AND ss.ID = %d AND p.ID = %d', $school_id, $data['session_id'], $data['payment_id'] )
+				$wpdb->prepare( 'SELECT sr.name as student_name, sr.admission_number, sr.enrollment_number, sr.roll_number, sr.phone, sr.email, p.receipt_number, p.amount, p.payment_method, p.created_at, p.invoice_label, p.invoice_id, i.label as invoice_title, c.label as class_label, se.label as section_label, u.user_email as login_email, s.label as school_name FROM %i as p JOIN %i as s ON s.ID = p.school_id JOIN %i as sr ON sr.ID = p.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id LEFT OUTER JOIN %i as i ON i.ID = p.invoice_id LEFT OUTER JOIN %i as u ON u.ID = sr.user_id WHERE p.school_id = %d AND ss.ID = %d AND p.ID = %d', WLSM_PAYMENTS, WLSM_SCHOOLS, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_INVOICES, WLSM_USERS, $school_id, $data['session_id'], $data['payment_id'] )
 			);
 
 			if ( ! $payment ) {
@@ -190,16 +205,7 @@ class WLSM_Notify {
 		if ( $email_offline_fee_submission_enable ) {
 			global $wpdb;
 			$payment = $wpdb->get_row(
-				$wpdb->prepare( 'SELECT sr.name as student_name, sr.admission_number, sr.enrollment_number, sr.roll_number, sr.phone, sr.email, p.receipt_number, p.amount, p.payment_method, p.created_at, p.invoice_label, p.invoice_id, i.label as invoice_title, c.label as class_label, se.label as section_label, u.user_email as login_email, s.label as school_name FROM ' . WLSM_PAYMENTS . ' as p 
-					JOIN ' . WLSM_SCHOOLS . ' as s ON s.ID = p.school_id 
-					JOIN ' . WLSM_STUDENT_RECORDS . ' as sr ON sr.ID = p.student_record_id 
-					JOIN ' . WLSM_SESSIONS . ' as ss ON ss.ID = sr.session_id 
-					JOIN ' . WLSM_SECTIONS . ' as se ON se.ID = sr.section_id 
-					JOIN ' . WLSM_CLASS_SCHOOL . ' as cs ON cs.ID = se.class_school_id 
-					JOIN ' . WLSM_CLASSES . ' as c ON c.ID = cs.class_id 
-					LEFT OUTER JOIN ' . WLSM_INVOICES . ' as i ON i.ID = p.invoice_id 
-					LEFT OUTER JOIN ' . WLSM_USERS . ' as u ON u.ID = sr.user_id 
-					WHERE p.school_id = %d AND ss.ID = %d AND p.ID = %d', $school_id, $data['session_id'], $data['payment_id'] )
+				$wpdb->prepare( 'SELECT sr.name as student_name, sr.admission_number, sr.enrollment_number, sr.roll_number, sr.phone, sr.email, p.receipt_number, p.amount, p.payment_method, p.created_at, p.invoice_label, p.invoice_id, i.label as invoice_title, c.label as class_label, se.label as section_label, u.user_email as login_email, s.label as school_name FROM %i as p JOIN %i as s ON s.ID = p.school_id JOIN %i as sr ON sr.ID = p.student_record_id JOIN %i as ss ON ss.ID = sr.session_id JOIN %i as se ON se.ID = sr.section_id JOIN %i as cs ON cs.ID = se.class_school_id JOIN %i as c ON c.ID = cs.class_id LEFT OUTER JOIN %i as i ON i.ID = p.invoice_id LEFT OUTER JOIN %i as u ON u.ID = sr.user_id WHERE p.school_id = %d AND ss.ID = %d AND p.ID = %d', WLSM_PAYMENTS, WLSM_SCHOOLS, WLSM_STUDENT_RECORDS, WLSM_SESSIONS, WLSM_SECTIONS, WLSM_CLASS_SCHOOL, WLSM_CLASSES, WLSM_INVOICES, WLSM_USERS, $school_id, $data['session_id'], $data['payment_id'] )
 			);
 
 			if ( ! $payment ) {

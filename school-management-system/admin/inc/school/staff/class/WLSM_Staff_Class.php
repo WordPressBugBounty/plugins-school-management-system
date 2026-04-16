@@ -35,14 +35,11 @@ class WLSM_Staff_Class
 
 		// Searching.
 		$condition = '';
-		if (esc_sql($_POST['search']['value'])) {
-			$search_value = sanitize_text_field(esc_sql($_POST['search']['value']));
-			if ('' !== $search_value) {
-				$condition .= '' .
-					'(c.label LIKE "%' . $search_value . '%")';
+		if (isset($_POST['search']['value']) && '' !== $_POST['search']['value']) {
+			$search_value = sanitize_text_field($_POST['search']['value']);
+			$condition .= $wpdb->prepare('(c.label LIKE %s)', '%' . $wpdb->esc_like($search_value) . '%');
 
-				$query_filter .= (' HAVING ' . $condition);
-			}
+			$query_filter .= (' HAVING ' . $condition);
 		}
 
 		// Ordering.
@@ -69,16 +66,19 @@ class WLSM_Staff_Class
 		$rows_query = WLSM_M_Staff_Class::fetch_classes_query_count($school_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and $condition are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query_filter and $limit are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -147,8 +147,7 @@ class WLSM_Staff_Class
 		if (esc_sql($_POST['search']['value'])) {
 			$search_value = sanitize_text_field(esc_sql($_POST['search']['value']));
 			if ('' !== $search_value) {
-				$condition .= '' .
-					'(se.label LIKE "%' . $search_value . '%")';
+				$condition .= $wpdb->prepare('(se.label LIKE %s)', '%' . $wpdb->esc_like($search_value) . '%');
 
 				$query_filter .= (' HAVING ' . $condition);
 			}
@@ -178,16 +177,19 @@ class WLSM_Staff_Class
 		$rows_query = WLSM_M_Staff_Class::fetch_sections_query_count($school_id, $class_school_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic segments are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  and  are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -289,9 +291,9 @@ class WLSM_Staff_Class
 
 			// Checks if section already exists in the class with this label.
 			if ($section_id) {
-				$section_exist = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) as count FROM ' . WLSM_SECTIONS . ' as se WHERE se.label = %s AND se.ID != %d AND se.class_school_id = %d', $label, $section_id, $class_school_id));
+				$section_exist = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) as count FROM %i as se WHERE se.label = %s AND se.ID != %d AND se.class_school_id = %d', WLSM_SECTIONS, $label, $section_id, $class_school_id));
 			} else {
-				$section_exist = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) as count FROM ' . WLSM_SECTIONS . ' as se WHERE se.label = %s AND se.class_school_id = %d', $label, $class_school_id));
+				$section_exist = $wpdb->get_var($wpdb->prepare('SELECT COUNT(*) as count FROM %i as se WHERE se.label = %s AND se.class_school_id = %d', WLSM_SECTIONS, $label, $class_school_id));
 			}
 
 			if ($section_exist) {
@@ -321,7 +323,7 @@ class WLSM_Staff_Class
 
 				// Checks if update or insert.
 				if ($section_id) {
-					$data['updated_at'] = date('Y-m-d H:i:s');
+					$data['updated_at'] = current_time('mysql');
 
 					$success = $wpdb->update(WLSM_SECTIONS, $data, array('ID' => $section_id));
 					$message = esc_html__('Section updated successfully.', 'school-management-system');
@@ -346,7 +348,7 @@ class WLSM_Staff_Class
 				if ($is_default) {
 					$success = $wpdb->update(
 						WLSM_CLASS_SCHOOL,
-						array('default_section_id' => $section_id, 'updated_at' => date('Y-m-d H:i:s')),
+						array('default_section_id' => $section_id, 'updated_at' => current_time('mysql')),
 						array('ID' => $class_school_id)
 					);
 
@@ -414,7 +416,6 @@ class WLSM_Staff_Class
 			if ($section->ID === $default_section_id) {
 				throw new Exception(esc_html__('Default section can\'t be deleted.', 'school-management-system'));
 			}
-
 		} catch (Exception $exception) {
 			$buffer = ob_get_clean();
 			if (!empty($buffer)) {
@@ -430,7 +431,7 @@ class WLSM_Staff_Class
 
 			$success = $wpdb->update(
 				WLSM_STUDENT_RECORDS,
-				array('section_id' => $default_section_id, 'updated_at' => date('Y-m-d H:i:s')),
+				array('section_id' => $default_section_id, 'updated_at' => current_time('mysql')),
 				array('section_id' => $section_id)
 			);
 
@@ -491,8 +492,8 @@ class WLSM_Staff_Class
 
 				$condition .= $wpdb->prepare(
 					'(n.title LIKE %s) OR ' .
-					'(n.link_to LIKE %s) OR ' .
-					'(u.user_login LIKE %s)',
+						'(n.link_to LIKE %s) OR ' .
+						'(u.user_login LIKE %s)',
 					$search_value,
 					$search_value,
 					$search_value
@@ -542,7 +543,7 @@ class WLSM_Staff_Class
 
 				if ($created_at && isset($format_created_at)) {
 					$created_at = $created_at->format($format_created_at);
-					$condition .= $wpdb->prepare(' OR (n.created_at LIKE %s)', '%' . $created_at . '%');
+					$condition .= $wpdb->prepare(' OR (n.created_at LIKE %s)', '%' . $wpdb->esc_like($created_at) . '%');
 				}
 
 				// Finally, construct the query condition
@@ -574,16 +575,19 @@ class WLSM_Staff_Class
 		$rows_query = WLSM_M_Staff_Class::fetch_notice_query_count($school_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic segments are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  and  are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -691,7 +695,6 @@ class WLSM_Staff_Class
 					}
 				}
 			}
-
 		} catch (Exception $exception) {
 			$buffer = ob_get_clean();
 			if (!empty($buffer)) {
@@ -736,7 +739,7 @@ class WLSM_Staff_Class
 				}
 
 				if ($notice_id) {
-					$data['updated_at'] = date('Y-m-d H:i:s');
+					$data['updated_at'] = current_time('mysql');
 
 					$success = $wpdb->update(WLSM_NOTICES, $data, array('ID' => $notice_id, 'school_id' => $school_id));
 				} else {
@@ -795,7 +798,6 @@ class WLSM_Staff_Class
 			if (!$notice) {
 				throw new Exception(esc_html__('Notice not found.', 'school-management-system'));
 			}
-
 		} catch (Exception $exception) {
 			$buffer = ob_get_clean();
 			if (!empty($buffer)) {
@@ -867,9 +869,9 @@ class WLSM_Staff_Class
 
 				$condition .= $wpdb->prepare(
 					'(sj.label LIKE %s) OR ' .
-					'(sj.code LIKE %s) OR ' .
-					'(sj.type LIKE %s) OR ' .
-					'(c.label LIKE %s)',
+						'(sj.code LIKE %s) OR ' .
+						'(sj.type LIKE %s) OR ' .
+						'(c.label LIKE %s)',
 					$search_value,
 					$search_value,
 					$search_value,
@@ -905,16 +907,19 @@ class WLSM_Staff_Class
 		$rows_query = WLSM_M_Staff_Class::fetch_subject_query_count($school_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic segments are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' AND (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  and  are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -1029,9 +1034,9 @@ class WLSM_Staff_Class
 			if (isset($class_school_id)) {
 				// Checks if subject name already exists for this class.
 				if ($subject_id) {
-					$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM ' . WLSM_SUBJECTS . ' as sj WHERE sj.class_school_id = %d AND sj.ID != %d AND sj.label = "%s"', $class_school_id, $subject_id, $label));
+					$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM %i as sj WHERE sj.class_school_id = %d AND sj.ID != %d AND sj.label = %s', WLSM_SUBJECTS, $class_school_id, $subject_id, $label));
 				} else {
-					$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM ' . WLSM_SUBJECTS . ' as sj WHERE sj.class_school_id = %d AND sj.label = "%s"', $class_school_id, $label));
+					$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM %i as sj WHERE sj.class_school_id = %d AND sj.label = %s', WLSM_SUBJECTS, $class_school_id, $label));
 				}
 
 				if ($subject_exists) {
@@ -1041,9 +1046,9 @@ class WLSM_Staff_Class
 				if (!empty($code)) {
 					// Checks if subject code already exists for this class.
 					if ($subject_id) {
-						$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM ' . WLSM_SUBJECTS . ' as sj WHERE sj.class_school_id = %d AND sj.ID != %d AND sj.code = "%s"', $class_school_id, $subject_id, $code));
+						$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM %i as sj WHERE sj.class_school_id = %d AND sj.ID != %d AND sj.code = %s', WLSM_SUBJECTS, $class_school_id, $subject_id, $code));
 					} else {
-						$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM ' . WLSM_SUBJECTS . ' as sj WHERE sj.class_school_id = %d AND sj.code = "%s"', $class_school_id, $code));
+						$subject_exists = $wpdb->get_row($wpdb->prepare('SELECT sj.ID FROM %i as sj WHERE sj.class_school_id = %d AND sj.code = %s', WLSM_SUBJECTS, $class_school_id, $code));
 					}
 
 					if ($subject_exists) {
@@ -1053,7 +1058,6 @@ class WLSM_Staff_Class
 			} else {
 				$errors['class_id'] = esc_html__('Class not found.', 'school-management-system');
 			}
-
 		} catch (Exception $exception) {
 			$buffer = ob_get_clean();
 			if (!empty($buffer)) {
@@ -1085,7 +1089,7 @@ class WLSM_Staff_Class
 				);
 
 				if ($subject_id) {
-					$data['updated_at'] = date('Y-m-d H:i:s');
+					$data['updated_at'] = current_time('mysql');
 
 					$success = $wpdb->update(WLSM_SUBJECTS, $data, array('ID' => $subject_id));
 				} else {
@@ -1138,7 +1142,6 @@ class WLSM_Staff_Class
 			if (!$subject) {
 				throw new Exception(esc_html__('Subject not found.', 'school-management-system'));
 			}
-
 		} catch (Exception $exception) {
 			$buffer = ob_get_clean();
 			if (!empty($buffer)) {
@@ -1211,9 +1214,9 @@ class WLSM_Staff_Class
 
 				$condition .= $wpdb->prepare(
 					'(a.name LIKE %s) OR ' .
-					'(a.phone LIKE %s) OR ' .
-					'(u.user_login LIKE %s) OR ' .
-					'(a.is_active LIKE %s)',
+						'(a.phone LIKE %s) OR ' .
+						'(u.user_login LIKE %s) OR ' .
+						'(a.is_active LIKE %s)',
 					$search_value,
 					$search_value,
 					$search_value,
@@ -1249,16 +1252,19 @@ class WLSM_Staff_Class
 		$rows_query = WLSM_M_Staff_Class::fetch_subject_admins_query_count($school_id, $subject_id);
 
 		// Total rows count.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  is built from safely prepared fragments.
 		$total_rows_count = $wpdb->get_var($rows_query);
 
 		// Filtered rows count.
 		if ($condition) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $rows_query and dynamic components are built from safely prepared fragments.
 			$filter_rows_count = $wpdb->get_var($rows_query . ' WHERE (' . $condition . ')');
 		} else {
 			$filter_rows_count = $total_rows_count;
 		}
 
 		// Filtered limit rows.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared --  and  are built from safely prepared fragments.
 		$filter_rows_limit = $wpdb->get_results($query_filter . $limit);
 
 		$data = array();
@@ -1322,7 +1328,6 @@ class WLSM_Staff_Class
 			}
 
 			$admin_subject_id = $admin_subject->ID;
-
 		} catch (Exception $exception) {
 			$buffer = ob_get_clean();
 			if (!empty($buffer)) {
@@ -1454,6 +1459,7 @@ class WLSM_Staff_Class
 				// Insert admin_subject records.
 				$sql = 'INSERT IGNORE INTO ' . WLSM_ADMIN_SUBJECT . ' (admin_id, subject_id) VALUES ';
 				$sql .= implode(', ', $place_holders);
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $sql contains dynamic placeholders but no insecure inputs; table name is constant.
 				$success = $wpdb->query($wpdb->prepare("$sql ", $values));
 
 				$message = esc_html__('Teachers assigned successfully.', 'school-management-system');
